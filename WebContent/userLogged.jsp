@@ -1,7 +1,7 @@
 <%@ page language="java" 
          contentType="text/html; charset=windows-1256"
          pageEncoding="windows-1256"
-         import="ExamplePackage.UserBean"
+         import="System.UserBean"
    %>
  
    <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 

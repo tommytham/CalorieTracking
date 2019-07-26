@@ -34,6 +34,7 @@ public class CreateAccountServlet extends HttpServlet {
 			}
 			else {
 				request.setAttribute("errorMessage", "Invalid input");
+				request.getRequestDispatcher("/createAccount.jsp").forward(request, response);
 				//response.sendRedirect("createAccount.jsp"); //retry
 			}
 			

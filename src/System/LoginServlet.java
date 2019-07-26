@@ -37,6 +37,9 @@ public class LoginServlet extends HttpServlet {
 				HttpSession session = request.getSession(true);
 				session.setAttribute("currentSessionUser", user);
 				response.sendRedirect("userLogged.jsp"); // logged-in page
+				
+				//if current weight is null (implies not entered personal info
+				//then direct to start config
 			}
 
 			else
