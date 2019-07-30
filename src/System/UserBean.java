@@ -6,8 +6,57 @@ public class UserBean {
     private String password;
     private String firstName;
     private String lastName;
+    
+    private String gender; // true male false female
+    private int currentWeight; // in kg
+	private int height; // in cm
+    private String activityLevel; // set string to "low", "moderate" or "high"
+    private String goal; // set string to "lose", "maintain", "gain"
+    
     public boolean valid;
-	
+    public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public int getCurrentWeight() {
+		return currentWeight;
+	}
+
+	public void setCurrentWeight(int currentWeight) {
+		this.currentWeight = currentWeight;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public String getActivityLevel() {
+		return activityLevel;
+	}
+
+	public void setActivityLevel(String activityLevel) {
+		this.activityLevel = activityLevel;
+	}
+
+	public String getGoal() {
+		return goal;
+	}
+
+	public void setGoal(String goal) {
+		this.goal = goal;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	
     public String getFirstName() {
        return firstName;

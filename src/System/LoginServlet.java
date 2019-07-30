@@ -25,7 +25,8 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, java.io.IOException {
 
 		try {
-
+			
+			//get input from form
 			UserBean user = new UserBean();
 			user.setUserName(request.getParameter("un"));
 			user.setPassword(request.getParameter("pw"));
@@ -36,14 +37,16 @@ public class LoginServlet extends HttpServlet {
 
 				HttpSession session = request.getSession(true);
 				session.setAttribute("currentSessionUser", user);
-				response.sendRedirect("userLogged.jsp"); // logged-in page
+				response.sendRedirect("startConfig.jsp"); // logged-in page
 				
 				//if current weight is null (implies not entered personal info
 				//then direct to start config
 			}
 
 			else
-				response.sendRedirect("invalidLogin.jsp"); // error page
+				request.setAttribute("errorMessage", "Details do not match. Please try again.");
+				request.getRequestDispatcher("/LoginPage.jsp").forward(request, response);
+				
 		}
 
 		catch (Throwable theException) {

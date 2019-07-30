@@ -8,6 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+/***
+ * Servlet class handling the create account jsp
+ * @author tommy
+ *
+ */
 @WebServlet("/CreateAccountServlet")
 public class CreateAccountServlet extends HttpServlet {
 
@@ -30,6 +36,7 @@ public class CreateAccountServlet extends HttpServlet {
 			user = UserDAO.createUser(user);
 			
 			if (user.isValid()){
+				
 			response.sendRedirect("LoginPage.jsp"); // logged-in page
 			}
 			else {

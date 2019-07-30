@@ -1,8 +1,9 @@
 @charset "ISO-8859-1";
 
 body {
-  background-color: lightblue;
+  background-color: white;
   font-family: verdana;
+  font-size: 16px;
 }
 
 h1 {
@@ -18,4 +19,50 @@ p {
 
 div.login{
 	text-align: center;
+}
+
+div.createAccount{
+	text-align: center;
+}
+
+div.error{
+	font-family: verdana;
+	font-size: 10px;
+	color: red;
+}
+
+a:visited{
+	color: MediumSeaGreen;
+}
+
+a:hover{
+	color: #FEF56D;
+}
+
+form {
+	border: 2px solid #f1f1f1;
+	  border-radius: 3px;
+  background-color: #f2f2f2;
+  padding: 20px;
+ 
+	}
+	
+input[type=button], input[type=submit]{
+	background-color: MediumSeaGreen;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+input[type=text], input[type=password] {
+  width: 30%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }

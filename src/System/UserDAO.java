@@ -105,6 +105,7 @@ public class UserDAO
 		String createQuery = "insert into users(firstname,lastname,username,password)" +
 							"values('" +firstname+"','"+lastname+"','"+username+"','"+password+"')";
 		
+		//validation
 		if(bean.getUsername().length()>3 && bean.getPassword().length() > 3 
 				&& bean.getFirstName().length()>3 && bean.getLastName().length()>3) {
 			try 

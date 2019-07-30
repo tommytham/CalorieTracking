@@ -18,26 +18,18 @@
 	<h1>Login Page</h1>
 		<form action="LoginServlet" >
 			
-			Username: <br> 		
-			<input type="text" name="un"/><br>		
+					
+			<input type="text" placeholder="Username" name="un"/><br><br>		
 			
-			Password: <br>
-			<input type="password" name="pw"/><br>
+			<input type="password" placeholder="Password" name="pw"/><br>
 			<br>
-			<input type="button" value="Create Account" onclick="openPage('createAccount.jsp')"/>
-			<input type="submit" value="Login">			
-		
+			
+			<input type="submit" value="Login">	<br><br>		
+		<div style="font-size: 13px">Don't have an account yet? <a href="createAccount.jsp" >Sign up here </a></div>
 		</form>
+		<br>
+		<div class="error">${errorMessage}</div>
 		
-
-<script type="text/javascript">
-		
- function openPage(pageURL){
-	 
- window.location.href = pageURL;
- 
- }
-</script>
 
 </div>
 	</body>
