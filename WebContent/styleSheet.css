@@ -17,6 +17,17 @@ p {
   font-size: 20px;
 }
 
+label{
+	display: inline-block;
+	width: 170px;
+	text-align: left;
+	
+}
+
+div.profileSetup{
+	text-align: center;
+}
+
 div.login{
 	text-align: center;
 }

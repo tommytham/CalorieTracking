@@ -31,16 +31,21 @@ public class CreateAccountServlet extends HttpServlet {
 		user.setPassword(request.getParameter("pw"));
 		user.setFirstName(request.getParameter("fn"));
 		user.setLastName(request.getParameter("ln"));
+		String validatePass = request.getParameter("confirmpw");
 		
 		try {
 			user = UserDAO.createUser(user);
 			
-			if (user.isValid()){
+			if (user.isValid() && validatePass.equals(user.getPassword())){
 				
 			response.sendRedirect("LoginPage.jsp"); // logged-in page
 			}
+			else if(!validatePass.equals(user.getPassword())) {
+				request.setAttribute("errorMessage", "Passwords do not match, please try again.");
+				request.getRequestDispatcher("/createAccount.jsp").forward(request, response);
+			}
 			else {
-				request.setAttribute("errorMessage", "Invalid input");
+				request.setAttribute("errorMessage", "Invalid input, please try again.");
 				request.getRequestDispatcher("/createAccount.jsp").forward(request, response);
 				//response.sendRedirect("createAccount.jsp"); //retry
 			}

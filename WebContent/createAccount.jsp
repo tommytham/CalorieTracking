@@ -13,10 +13,11 @@
 	<div class="createAccount">
 		<form action="CreateAccountServlet">
 
-			Username: <input type="text" name="un" /> <br> <br>
-			Password: <input type="text" name="pw" /> <br> <br>
-			FirstName: <input type="text" name="fn" /> <br> <br>
-			 LastName: <input type="text" name="ln" /> <br> <br>
+			<label>Username:</label> <input type="text" name="un" /> <br> <br>
+			<label>Password:</label> <input type="password" name="pw" /> <br> <br> 
+			<label>Confirm Password:</label> <input type="password" name="confirmpw"/><br> <br>
+			<label>First Name:</label> <input type="text" name="fn" /> <br> <br>
+			 <label>Last Name:</label> <input type="text" name="ln" /> <br> <br>
 			<br> 
 			<input type="button" value="Go Back" onclick="openPage('LoginPage.jsp')" />
 			 <input type="submit" value="Create">

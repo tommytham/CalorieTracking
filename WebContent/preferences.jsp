@@ -9,7 +9,20 @@
 </head>
 <body>
 
-<h1>YEEEEEEEEEAAAAAAAAAA</h1>
+<form action="PreferenceServlet">
+<h1>Preferences</h1>
+
+<input type="submit" value="Proceed">
+
+</form>
+
+		<script type="text/javascript">
+		function openPage(pageURL) {
+
+			window.location.href = pageURL;
+
+		}
+	</script>
 
 </body>
 </html>

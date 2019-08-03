@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class ConnectionManager {
 
-    private final static String url = "jdbc:postgresql://localhost/example";
+    private final static String url = "jdbc:postgresql://localhost/calorietracking";
     private final static String user = "postgres";
     private final static String password = "1234x";
           
@@ -32,8 +32,5 @@ public class ConnectionManager {
 
     return con;
 }
-    public static void main(String [] args) {
-    	ConnectionManager app = new ConnectionManager();
-    	app.getConnection();
-    }
- }
+
+}

@@ -107,7 +107,7 @@ public class UserDAO
 		
 		//validation
 		if(bean.getUsername().length()>3 && bean.getPassword().length() > 3 
-				&& bean.getFirstName().length()>3 && bean.getLastName().length()>3) {
+				&& bean.getFirstName().length()>1 && bean.getLastName().length()>1) {
 			try 
 			{
 				//connect to DB 
