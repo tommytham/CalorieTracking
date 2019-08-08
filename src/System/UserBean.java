@@ -7,8 +7,8 @@ public class UserBean {
     private String firstName;
     private String lastName;
     
-    private String gender; // true male false female
-    private int currentWeight; // in kg
+    private String gender; 
+    private float currentWeight; // in kg
 	private int height; // in cm
     private String activityLevel; // set string to "low", "moderate" or "high"
     private String goal; // set string to "lose", "maintain", "gain"
@@ -16,6 +16,7 @@ public class UserBean {
     private double BMR;
     
     public boolean valid;
+    
     public String getGender() {
 		return gender;
 	}
@@ -24,11 +25,11 @@ public class UserBean {
 		this.gender = gender;
 	}
 
-	public int getCurrentWeight() {
+	public float getCurrentWeight() {
 		return currentWeight;
 	}
 
-	public void setCurrentWeight(int currentWeight) {
+	public void setCurrentWeight(float currentWeight) {
 		this.currentWeight = currentWeight;
 	}
 

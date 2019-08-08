@@ -36,11 +36,19 @@ public class LoginServlet extends HttpServlet {
 
 				HttpSession session = request.getSession(true);
 				session.setAttribute("currentSessionUser", user);
+				
+				if(UserDAO.checkSetup(user) == false) {
 				response.sendRedirect("startConfig.jsp"); // logged-in page
 				
 				//if current weight is null (implies not entered personal info
 				//then direct to start config
 			}
+				else {
+					user = UserDAO.getUserBean(user);
+					session.setAttribute("currentSessionUser", user);
+					response.sendRedirect("dashboard.jsp");
+				}
+				}
 
 			else
 				request.setAttribute("errorMessage", "User details do not match. Please try again.");
@@ -56,6 +64,6 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, java.io.IOException {
-		this.doGet(request, response);
+		
 }
 }

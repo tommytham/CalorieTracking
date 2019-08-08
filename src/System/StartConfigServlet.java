@@ -1,5 +1,7 @@
 package System;
 
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,34 +18,39 @@ public class StartConfigServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, java.io.IOException {
-			
+		HttpSession session = request.getSession(true); //gets current session
+		UserBean currentUser = (UserBean) (session.getAttribute("currentSessionUser")); //gets bean from previous session (login page) and assigns to new bean
+		//test 
+		System.out.println(currentUser.getFirstName());
 		if(request.getParameter("activity").length()>0 && request.getParameter("height").length()>0 && request.getParameter("age").length()>0) {
-			UserBean bean = new UserBean();
-			bean.setActivityLevel(request.getParameter("activity"));
-			bean.setCurrentWeight(Integer.parseInt(request.getParameter("weight")));
-			bean.setGender(request.getParameter("gender"));
-			bean.setGoal(request.getParameter("goal"));
-			bean.setHeight(Integer.parseInt(request.getParameter("height")));
-			bean.setAge(Integer.parseInt(request.getParameter("age")));
+			currentUser.setActivityLevel(request.getParameter("activity"));
+			currentUser.setCurrentWeight(Float.parseFloat(request.getParameter("weight")));
+			currentUser.setGender(request.getParameter("gender"));
+			currentUser.setGoal(request.getParameter("goal"));
+			currentUser.setHeight(Integer.parseInt(request.getParameter("height")));
+			currentUser.setAge(Integer.parseInt(request.getParameter("age")));
 			
 			//validate with weight, age and height
-			if(bean.getCurrentWeight()>0 && bean.getHeight()>0 && bean.getAge()>0) {
-				if(bean.getGender().equals("Male")) {
-					BMR = 10*bean.getCurrentWeight() + 6.25*bean.getHeight()
-							- 5*bean.getAge() + 5;
-							
-				}
-				else{
-					BMR = 10*bean.getCurrentWeight() + 6.25*bean.getHeight()
-					- 5*bean.getAge() - 161;
+			if(currentUser.getCurrentWeight()>0 && currentUser.getHeight()>0 && currentUser.getAge()>0) {
+				try {
+					BMR = UserDAO.calculateBMR(currentUser);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			
-				bean.setBMR(BMR);
-				///////////////// replace this later with sql statement updating BMR attribute
-				HttpSession session = request.getSession(true);
-				session.setAttribute("currentSessionbean", bean);
-				/////////////////
-				System.out.println(bean.getBMR());
+				currentUser.setBMR(BMR);
+				
+				session.setAttribute("currentSessionUser", currentUser);
+				System.out.println(currentUser.getBMR());
+				
+				try {
+					UserDAO.setupProfile(currentUser);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				response.sendRedirect("preferences.jsp");
 			}
 			
@@ -62,4 +69,5 @@ public class StartConfigServlet extends HttpServlet {
 		
 
 	}
+
 }

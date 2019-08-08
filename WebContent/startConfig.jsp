@@ -26,17 +26,17 @@
 		<label>
 		Age 
 		</label>
-		<input type="number" max="150" name="age"><br> 
+		<input type="number" max="150" onkeypress="return checkNumber(event)" name="age"><br> 
 
 		<label>
 		Current weight (kg) 
 		</label>
-		<input type="number" name="weight"> <br> 
+		<input type="number" name="weight" onkeypress="return checkNumber(event)" > <br> 
 		
 		<label>
 		Height (cm)
 		</label> 
-		<input type="number" name="height" ><br>
+		<input type="number" name="height" onkeypress="return checkNumber(event)" ><br>
 		
 		<label>
 		Activity level 
@@ -66,6 +66,18 @@
 			window.location.href = pageURL;
 
 		}
+
 	</script>
+	
+	<script>
+	function checkNumber(evt){
+	    var charCode = (evt.which) ? evt.which : event.keyCode
+	    if (charCode > 31 && (charCode < 48 || charCode > 57))
+	        return false;
+	    return true;
+	}
+	</script>
+	
+	
 </body>
 </html>

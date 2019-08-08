@@ -12,6 +12,12 @@ h1 {
   font-family: verdana;
 }
 
+h3{
+	color: MediumSeaGreen;
+  text-align: center;
+  font-family: verdana;
+}
+
 p {
   font-family: verdana;
   font-size: 20px;
@@ -33,6 +39,10 @@ div.login{
 }
 
 div.createAccount{
+	text-align: center;
+}
+
+div.table{
 	text-align: center;
 }
 
@@ -58,7 +68,7 @@ form {
  
 	}
 	
-input[type=button], input[type=submit]{
+input[type=button], input[type=submit],button{
 	background-color: MediumSeaGreen;
   border: none;
   color: white;
@@ -77,3 +87,12 @@ input[type=text], input[type=password] {
   border-radius: 4px;
   box-sizing: border-box;
 }
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  text-color: MediumSeaGreen;
+  font-size: 15px;
+}
+
+
