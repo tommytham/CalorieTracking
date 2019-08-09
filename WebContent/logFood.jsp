@@ -13,13 +13,14 @@
 </head>
 <body>
 
+<input type="button" value="Go Back" onclick="openPage('dashboard.jsp')" />
 <h1>What have you eaten today?</h1>
 
 <p>Please select from the food list below</p> <br>
 <div class="table" >
 <table style="width:80%" align="center">
 
-<tr> <th>Item Name</th> <th>Item Description</th> <th> Calories </th> </tr>
+<tr> <th>Item ID</th> <th>Item Name</th> <th>Item Description</th> <th> Calories </th> </tr>
 
 <% 
 ResultSet rs = null;
@@ -28,7 +29,11 @@ while(rs.next())
         {
             %>
                 <tr>
-                     <td>
+                	 <td>
+                	 <%=Integer.toString(rs.getInt("fooditemid")) %>
+                	 </td>
+                	        
+                	 <td>
                      <%=rs.getString("itemname")%>
                      </td>
                      
@@ -54,5 +59,14 @@ while(rs.next())
 <form action="LogFoodServlet">
 <input type="text" placeholder="enter id or item name" name="foodItem"><button>Log food item</button>
 </form>
+<div class="error">${errorMessage}</div>
+<div class="success">${successMessage}</div>
 </body>
+	<script type="text/javascript">
+		function openPage(pageURL) {
+
+			window.location.href = pageURL;
+
+		}
+	</script>
 </html>

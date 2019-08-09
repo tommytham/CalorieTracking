@@ -169,16 +169,16 @@ public class UserDAO {
 		return false;
 	}
 
-	public static double calculateBMR(UserBean bean) throws SQLException {
+	public static int calculateBMR(UserBean bean) throws SQLException {
 		int userID = getUserID(bean);
-		double BMR;
+		int BMR;
 
 		if (bean.getGender().equals("Male")) {
-			BMR = 10 * bean.getCurrentWeight() + 6.25 * bean.getHeight() - 5 * bean.getAge() + 5;
+			BMR = (int) (10 * bean.getCurrentWeight() + 6.25 * bean.getHeight() - 5 * bean.getAge() + 5);
 			
 
 		} else {
-			BMR = 10 * bean.getCurrentWeight() + 6.25 * bean.getHeight() - 5 * bean.getAge() - 161;
+			BMR = (int) (10 * bean.getCurrentWeight() + 6.25 * bean.getHeight() - 5 * bean.getAge() - 161);
 
 		}
 
@@ -186,25 +186,25 @@ public class UserDAO {
 		//activity levels
 		
 		if (bean.getActivityLevel().equals("light")){
-			BMR = BMR*1.375;
+			BMR = (int) (BMR*1.375);
 		}
 		
 		else if (bean.getActivityLevel().equals("moderate")) {
-			BMR = BMR*1.55;
+			BMR = (int) (BMR*1.55);
 		}
 		
 		else {
-			BMR = BMR*1.725; 
+			BMR = (int) (BMR*1.725); 
 		}
 		
 		//goals
 		
 		if (bean.getGoal().equals("lose")) {
-			BMR = BMR*0.8;
+			BMR = (int) (BMR*0.8);
 		}
 		
 		else if(bean.getGoal().equals("gain")) {
-			BMR = BMR*1.2;
+			BMR = (int) (BMR*1.2);
 		}
 		
 
@@ -283,5 +283,26 @@ public class UserDAO {
 	
 	}
 	
+	//use method to display foods eaten at dash board
+	public static ResultSet getTodaysLogs (int userID) throws SQLException {
+		String searchQuery = "select fooditems.itemname,fooditems.calories from eatlog,fooditems"
+				+ " where eatlog.userID ='"+userID+"' AND eatlog.date='"+java.time.LocalDate.now()+"'"
+						+ "AND eatlog.fooditemid=fooditems.fooditemid";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		return rs;
+	}
+	
+	//use method to get the number of calories consumed so far
+	public static int getConsumedCalories(int userID) throws SQLException {
+		int caloriesConsumed = 0;
+		rs = getTodaysLogs(userID);
+		while(rs.next()) {
+			caloriesConsumed += rs.getInt("calories");
+			
+		}
+		return caloriesConsumed;
+	}
 
 }

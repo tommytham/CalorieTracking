@@ -13,7 +13,7 @@ public class UserBean {
     private String activityLevel; // set string to "low", "moderate" or "high"
     private String goal; // set string to "lose", "maintain", "gain"
     private int age;
-    private double BMR;
+    private int BMR;
     
     public boolean valid;
     
@@ -113,11 +113,11 @@ public class UserBean {
 		this.age = age;
 	}
 
-	public double getBMR() {
+	public int getBMR() {
 		return BMR;
 	}
 
-	public void setBMR(double bMR) {
+	public void setBMR(int bMR) {
 		BMR = bMR;
 	}	
 }

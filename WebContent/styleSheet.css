@@ -52,6 +52,12 @@ div.error{
 	color: red;
 }
 
+div.success{
+	font-family: verdana;
+	font-size: 10px;
+	color: MediumSeaGreen;
+}
+
 a:visited{
 	color: MediumSeaGreen;
 }

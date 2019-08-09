@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 public class StartConfigServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static double BMR;
+	private static int BMR;
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"
     import="System.UserBean"
-    import="System.UserDAO"%>
+    import="System.UserDAO"
+    import="java.sql.ResultSet"%>
     
 <!DOCTYPE html>
 <link href="styleSheet.css" rel="stylesheet" type="text/css">
@@ -9,7 +10,7 @@
             <% UserBean currentUser = (UserBean) (session.getAttribute("currentSessionUser"));
             	currentUser = UserDAO.getUserBean(currentUser);
             	System.out.println(currentUser.getGender());
-               double BMR = UserDAO.calculateBMR(currentUser);
+               int BMR = UserDAO.calculateBMR(currentUser);
                currentUser.setBMR(BMR);%>
             
            
@@ -21,12 +22,43 @@
 <h1>Hello <%= currentUser.getFirstName() + " " + currentUser.getLastName() + ""%>!</h1>
 <form action="DashboardServlet">
 
-Calories remaining for today:  <%= currentUser.getBMR() %> <br><br>
+Your calorie budget today is : <%= currentUser.getBMR() %> <br>
+Calories remaining for today:  <%= currentUser.getBMR()-UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)) %> <br><br>
 
 </form>
 <br>
 <form>
 Foods eaten today: <br><br> 
+<div class="table" >
+<table style="width:80%" align="center">
+
+<tr> <th>Item Name</th> <th> Calories </th> </tr>
+
+<% 
+ResultSet rs = null;
+rs = UserDAO.getTodaysLogs(UserDAO.getUserID(currentUser));
+while(rs.next())
+        {
+            %>
+                <tr>
+                     <td>
+                     <%=rs.getString("itemname")%>
+                     </td>
+                     
+                     
+                     <td>
+                     <%=Integer.toString(rs.getInt("calories"))%>
+                	</td>
+                </tr>
+            <% 
+        }
+    %>
+
+
+
+</table>
+Total calories: <%=UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)) %>
+</div>
 </form>
 
 

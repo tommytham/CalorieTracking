@@ -47,23 +47,31 @@ public class LogFoodServlet extends HttpServlet {
 			FoodBean food = UserDAO.getFoodBean(itemID);
 			if(!food.getItemName().equals(null)) {
 				UserDAO.insertEatLog(UserDAO.getUserID(currentUser), itemID);
+				request.setAttribute("successMessage", food.getItemName()+" has been logged!");
+				request.getRequestDispatcher("/logFood.jsp").forward(request, response);
 			}
 			else {
-				System.out.println("Sorry item does not exist");
+				request.setAttribute("errorMessage", "Item does not exist");
+				request.getRequestDispatcher("/logFood.jsp").forward(request, response);
 			}
 		}
 		catch(Exception e){
 			System.out.println("Letters are not numbers!" + request.getParameter("foodItem"));
 			try {
-				//if valid name -> id will be greater than 0
+				//if valid name -> id will be greater than 0 as it means item exist in db
 				if(UserDAO.getItemID(request.getParameter("foodItem"))>0) {
 					int itemID = UserDAO.getItemID(request.getParameter("foodItem"));
 					System.out.println(itemID);
 					UserDAO.insertEatLog(UserDAO.getUserID(currentUser), itemID);
-					System.out.println("Successfully inserted" +request.getParameter("foodItem") );
+					request.setAttribute("successMessage", request.getParameter("foodItem")+ " has been logged!");
+					request.getRequestDispatcher("/logFood.jsp").forward(request, response);
 				}
+					
+					else {
+						request.setAttribute("errorMessage", "User details do not match. Please try again.");
+						request.getRequestDispatcher("/logFood.jsp").forward(request, response);
+					}
 			} catch (SQLException e1) {
-				
 				e1.printStackTrace();
 			}
 		}
