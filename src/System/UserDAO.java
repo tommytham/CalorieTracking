@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.sun.xml.internal.ws.util.StringUtils;
 
@@ -303,6 +305,57 @@ public class UserDAO {
 			
 		}
 		return caloriesConsumed;
+	}
+	
+	//recommendation based on remaining calories and past eating logs
+	public static ArrayList getRecommendations(int userID) throws SQLException {
+		ArrayList<?> recommendations = new ArrayList<>();
+		List<Integer> sortCount = new ArrayList<Integer>();
+		int fruitCount = 0;
+		int vegetableCount = 0;
+		int gbnCount = 0; // grains, beans and nuts
+		int meatCount = 0; // meat and poultry
+		int seafoodCount = 0;
+		int dairyCount = 0;
+		int otherCount = 0;
+		//get the latest 20 eat logs
+		String searchQuery = "SELECT fooditems.type"
+				+ " from eatlog where userid = '"+userID+"' "
+						+ "AND fooditems.fooditemid=eatlog.fooditemid"
+						+ " ORDER BY logid DESC LIMIT 20";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		while (rs.next()) {
+			if(rs.getString("type").equals("Fruit")) {
+				fruitCount ++;
+			}
+			else if (rs.getString("type").equals("Vegetable")) {
+				vegetableCount ++;
+			}
+			else if (rs.getString("type").equals("Grains, Beans and Nuts")) {
+				gbnCount ++;
+				
+			}
+			else if (rs.getString("type").equals("Meat and Poultry")) {
+				meatCount ++;
+			}
+			else if (rs.getString("type").equals("Fish and Seafood")) {
+				seafoodCount ++;
+			}
+			else if (rs.getString("type").equals("Dairy")) {
+				dairyCount ++;
+			}
+			else {
+				otherCount ++;
+			}
+			
+			//sort out the counts and find what has the highest count
+			//with the highest count, get the meat type and calories remaining
+			
+		}
+		return recommendations;
+		
 	}
 
 }

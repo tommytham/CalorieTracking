@@ -18,7 +18,7 @@ public class ConnectionManager {
 	  try
 	  {            	
 	     con = DriverManager.getConnection(url,user,password); 
-	     System.out.println("Connected to the PostgreSQL server successfully.");	
+	     //System.out.println("Connected to the PostgreSQL server successfully.");	
 	  // assuming your SQL Server's	username is "username"               
 	  // and password is "password"
 	       

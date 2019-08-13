@@ -68,7 +68,7 @@ public class LogFoodServlet extends HttpServlet {
 				}
 					
 					else {
-						request.setAttribute("errorMessage", "User details do not match. Please try again.");
+						request.setAttribute("errorMessage", "Item does not exist");
 						request.getRequestDispatcher("/logFood.jsp").forward(request, response);
 					}
 			} catch (SQLException e1) {
