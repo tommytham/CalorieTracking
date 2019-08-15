@@ -1,13 +1,18 @@
 package System;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class testing {
 
-	public static void main(String[] args) {
-		List<Integer> sortCount = new ArrayList<Integer>();
+	public static void main(String[] args) throws SQLException {
+		/***
+		String [] keyValues = new String [2];
+		HashMap<String, Integer> sortCount = new HashMap();
 		int fruitCount = 2;
 		int vegetableCount = 5;
 		int gbnCount = 3; // grains, beans and nuts
@@ -15,25 +20,77 @@ public class testing {
 		int seafoodCount = 8;
 		int dairyCount = 4;
 		int otherCount = 6;
+
+		sortCount.put("Fruit", fruitCount);
+		sortCount.put("Vegetable", vegetableCount);
+		sortCount.put("Grains, Beans and Nuts", gbnCount);
+		sortCount.put("Meat and Poultry", meatCount);
+		sortCount.put("Seafood", seafoodCount);
+		sortCount.put("Dairy", dairyCount);
+		sortCount.put("Other", otherCount);
+
 		
-		sortCount.add(fruitCount);
-		sortCount.add(vegetableCount);
-		sortCount.add(gbnCount);
-		sortCount.add(meatCount);
+		int maxValue = (Collections.max(sortCount.values()));
+	
+		sortCount.forEach((k, v) -> {
+			if (v.equals(maxValue)) {
+				System.out.println(k);
+				keyValues[0] = k;
+				
+				
+			}
+
+		});
 		
-		for(int i = 0; i<sortCount.size(); i++) {
-		System.out.print(sortCount.get(i));
+		sortCount.remove(keyValues[0]);
+		int maxValue2 = (Collections.max(sortCount.values())); // get new max value
+		sortCount.forEach((k, v) -> {
+			if (v.equals(maxValue2)) {
+				System.out.println(k);
+				keyValues[1] = k;
+				
+				
+			}
+		
+			//algorithm flawed if multiple variables have same max value
+		
+		
+	});
+	
+	*/
+		/***
+	ResultSet rs = UserDAO.getRecipeIDsFromFoodItemType("Protein");	
+	while(rs.next()) {
+		System.out.println(rs.getInt(1));
+	}
+	*/
+
+		
+		String type =UserDAO.getLogPattern(1)[0];
+		System.out.println("TYPE 1: " +type);
+		String type2 = UserDAO.getLogPattern(1)[1];
+		System.out.println("Type 2: " +type2);
+		ArrayList<RecipeBean> recs = new ArrayList<>();
+		ResultSet rs = UserDAO.getRecipeIDsFromFoodItemType(type);
+		ResultSet rs2 = UserDAO.getRecipeIDsFromFoodItemType(type2);
+		while(rs.next()) {
+			System.out.println(rs.getInt("recipeid") + " IS THE RECIPE ID BEING ADDED");
+			recs.add(UserDAO.getRecipeBean(rs.getInt("recipeid")));
 		}
-		System.out.println();
-		Collections.sort(sortCount);
-		for(int i = 0; i<sortCount.size(); i++) {
-		System.out.print(sortCount.get(i));
+		
+		while(rs2.next()) {
+			System.out.println(rs2.getInt("recipeid") + "IS THE RECIPE ID");
+			int recID = rs2.getInt("recipeid");
+			recs.add(UserDAO.getRecipeBean(recID));
 		}
-		System.out.print(sortCount.);
+		
+		System.out.println("SIZE OF ARRAY IS: " +recs.size());
 		
 		
+		
+		ArrayList<RecipeBean> hoo = recs;
+		//System.out.println(hoo.size());
 		
 	}
-	
 	
 }

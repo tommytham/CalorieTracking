@@ -71,34 +71,43 @@ while(rs.next())
 <div class="success">${successMessage}</div>
 </div>
 
+<!-- what is shown when user clicks on recipe tag -->
 <div id="recipe" class="tabcontent">
 <div class="table" >
 <table style="width:80%" align="center">
 
-<tr> <th>Item ID</th> <th>Item Name</th> <th>Item Description</th> <th> Calories </th> </tr>
+<tr> <th>Recipe ID</th> <th>Recipe Name</th> <th>Recipe Description</th> <th>Recipe Ingredients <th> Calories </th> </tr>
 
 
 <% 
-ResultSet rs2 = null;
-rs2 = UserDAO.getFoodTable();
+ResultSet rs2 = UserDAO.getRecipeTable();
+
 while(rs2.next())
         {
+	ResultSet rs3 = UserDAO.getRecipeFoodItems(rs2.getInt("recipeid"));
+	int totalCalories = UserDAO.caloriesGivenRecipeID(rs2.getInt("recipeid"));
             %>
                 <tr>
                 	 <td>
-                	 <%=Integer.toString(rs2.getInt("fooditemid")) %>
+                	 <%=Integer.toString(rs2.getInt("recipeid")) %>
                 	 </td>
                 	        
                 	 <td>
-                     <%=rs2.getString("itemname")%>
+                     <%=rs2.getString("recipename")%>
                      </td>
                      
                      <td>
-                     <%=rs2.getString("itemdescription") %>
+                     <%=rs2.getString("recipedescription") %>
                      </td>
                      
                      <td>
-                     <%=Integer.toString(rs2.getInt("calories"))%>
+                     <%while(rs3.next()){ %>
+                    	 <%=rs3.getString("itemname")%><br>
+                     <%} %>
+                     </td>
+                     
+                     <td>
+                     <%=totalCalories%>
                 	</td>
                 </tr>
             <% 
@@ -109,7 +118,13 @@ while(rs2.next())
 
 </table>
 </div>
+<form action="LogRecipeServlet">
+<input type="text" placeholder="enter id or recipe name" name="logRecipe"><button>Log recipe</button>
+</form>
+<div class="error">${errorRecipeMessage}</div>
+<div class="success">${successRecipeMessage}</div>
 </div>
+
 
 
 

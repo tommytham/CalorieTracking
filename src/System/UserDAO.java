@@ -1,10 +1,17 @@
 package System;
 
+/***
+ * Class that handles all the SQL Queries
+ * 
+ */
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import com.sun.xml.internal.ws.util.StringUtils;
@@ -13,7 +20,8 @@ public class UserDAO {
 	static Connection currentCon = null;
 	static ResultSet rs = null;
 	static Statement stmt = null;
-
+	static Statement stmt2 = null;
+	
 	public static int getUserID(UserBean bean) throws SQLException {
 		String username = bean.getUsername();
 		String password = bean.getPassword();
@@ -104,6 +112,7 @@ public class UserDAO {
 		return bean;
 	}
 
+	// Method which is called upon to create a user account
 	public static UserBean createUser(UserBean bean) throws SQLException {
 
 		String username = bean.getUsername();
@@ -152,7 +161,7 @@ public class UserDAO {
 		// insert statement
 		String createQuery = "INSERT INTO Progression (userID, weight, age, height, goal, activityLevel, date, gender)"
 				+ " values('" + userID + "','" + startingWeight + "','" + age + "','" + height + "','" + goal + "','"
-				+ activityLevel + "','" + java.time.LocalDate.now() + "','"+gender+ "')";
+				+ activityLevel + "','" + java.time.LocalDate.now() + "','" + gender + "')";
 		stmt.executeUpdate(createQuery);
 	}
 
@@ -177,7 +186,6 @@ public class UserDAO {
 
 		if (bean.getGender().equals("Male")) {
 			BMR = (int) (10 * bean.getCurrentWeight() + 6.25 * bean.getHeight() - 5 * bean.getAge() + 5);
-			
 
 		} else {
 			BMR = (int) (10 * bean.getCurrentWeight() + 6.25 * bean.getHeight() - 5 * bean.getAge() - 161);
@@ -185,35 +193,34 @@ public class UserDAO {
 		}
 
 		System.out.println(bean.getBMR());
-		//activity levels
-		
-		if (bean.getActivityLevel().equals("light")){
-			BMR = (int) (BMR*1.375);
+		// activity levels
+
+		if (bean.getActivityLevel().equals("light")) {
+			BMR = (int) (BMR * 1.375);
 		}
-		
+
 		else if (bean.getActivityLevel().equals("moderate")) {
-			BMR = (int) (BMR*1.55);
+			BMR = (int) (BMR * 1.55);
 		}
-		
+
 		else {
-			BMR = (int) (BMR*1.725); 
+			BMR = (int) (BMR * 1.725);
 		}
-		
-		//goals
-		
+
+		// goals
+
 		if (bean.getGoal().equals("lose")) {
-			BMR = (int) (BMR*0.8);
+			BMR = (int) (BMR * 0.8);
 		}
-		
-		else if(bean.getGoal().equals("gain")) {
-			BMR = (int) (BMR*1.2);
+
+		else if (bean.getGoal().equals("gain")) {
+			BMR = (int) (BMR * 1.2);
 		}
-		
 
 		return BMR;
 
 	}
-	
+
 	public static UserBean getUserBean(UserBean bean) throws SQLException {
 		int userID = getUserID(bean);
 		String searchQuery = "select * from progression where userid='" + userID + "'";
@@ -227,10 +234,10 @@ public class UserDAO {
 			bean.setActivityLevel(rs.getString("activitylevel"));
 			bean.setGoal(rs.getString("goal"));
 			bean.setAge(rs.getInt("age"));
-	}
+		}
 		return bean;
 	}
-	
+
 	public static ResultSet getFoodTable() throws SQLException {
 		String searchQuery = "select * from fooditems";
 		currentCon = ConnectionManager.getConnection();
@@ -239,8 +246,16 @@ public class UserDAO {
 		return rs;
 	}
 	
-	//input food name
-	//return itemid
+	public static ResultSet getRecipeTable() throws SQLException {
+		String searchQuery = "select * from recipe";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		return rs;
+	}
+
+	// input food name
+	// return itemid
 	public static int getItemID(String itemName) throws SQLException {
 		itemName = StringUtils.capitalize(itemName);
 		String searchQuery = "select fooditemid from fooditems where itemname='" + itemName + "'";
@@ -253,23 +268,59 @@ public class UserDAO {
 		}
 		return itemID;
 	}
-	
-	
-	//call getitemid and getuserid if need to
-	
-	public static void insertEatLog(int userID, int itemID) throws SQLException{
-		String insertQuery = "INSERT INTO eatlog (userid,fooditemid,date) values('" +userID+"','" +itemID+ "','"
-		+java.time.LocalDate.now() +"')";
-		
+
+	// input recipe name
+	// return recipeid
+	public static int getRecipeID(String recipeName) throws SQLException {
+		recipeName = StringUtils.capitalize(recipeName);
+		String searchQuery = "select recipeid from recipe where recipename='" + recipeName + "'";
+		int recipeID = 0;
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		while (rs.next()) {
+			recipeID = rs.getInt(1);
+		}
+		return recipeID;
+	}
+	// call getitemid and getuserid if need to
+
+	public static void insertEatLog(int userID, int itemID) throws SQLException {
+		String insertQuery = "INSERT INTO eatlog (userid,fooditemid,date) values('" + userID + "','" + itemID + "','"
+				+ java.time.LocalDate.now() + "')";
+
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		stmt.executeUpdate(insertQuery);
 	}
 	
+	public static void insertRecipeEatLog(int userID, int recipeID) throws SQLException {
+		//get fooditem ids that exist in recipe
+		//while(rs.next)
+		//insert into eatlog table the fooditemid one by one
+		String searchQuery = "SELECT fi.fooditemid, fi.itemname\r\n" + 
+				"FROM recipe as r, recipeitems as ri, fooditems as fi\r\n" + 
+				"WHERE r.recipeid = ri.recipeid\r\n" + 
+				"AND ri.fooditemid = fi.fooditemid\r\n" + 
+				"AND r.recipeid = '"+recipeID+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		stmt2 = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		while(rs.next()) {
+			System.out.println(rs.getInt("fooditemid"));
+			String insertQuery = "INSERT INTO eatlog (userid,fooditemid,date) values('" + userID + "','" + rs.getInt("fooditemid") + "','"
+					+ java.time.LocalDate.now() + "')";
+			stmt2.executeUpdate(insertQuery);
+			
+		}
+
+	}
+
 	// input id
-	//return bean
-	public static FoodBean getFoodBean (int itemID) throws SQLException {
-		String searchQuery = "select * from fooditems where fooditemid ='"+itemID+"'";
+	// return bean
+	public static FoodBean getFoodBean(int itemID) throws SQLException {
+		String searchQuery = "select * from fooditems where fooditemid ='" + itemID + "'";
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		rs = stmt.executeQuery(searchQuery);
@@ -279,83 +330,214 @@ public class UserDAO {
 			bean.setItemDescription(rs.getString("itemdescription"));
 			bean.setCalories(rs.getInt("calories"));
 			bean.setType(rs.getString("type"));
-			bean.setServingSize(rs.getFloat("servingsize"));
+			bean.setServingSize(rs.getString("servingsize"));
 		}
 		return bean;
-	
+
 	}
 	
-	//use method to display foods eaten at dash board
-	public static ResultSet getTodaysLogs (int userID) throws SQLException {
+	//input recipeid
+	//return bean
+	
+	public static RecipeBean getRecipeBean (int recipeID) throws SQLException {
+		String searchQuery = "select * from recipe where recipeid ='" + recipeID + "'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		RecipeBean bean = new RecipeBean();
+		while (rs.next()) {
+			bean.setRecipeID(rs.getInt("recipeid"));
+			bean.setRecipeName(rs.getString("recipename"));
+			bean.setRecipeDescription(rs.getString("recipedescription"));
+
+		}
+		return bean;
+	}
+
+	// Use this method to display foods eaten at dash board
+	public static ResultSet getTodaysLogs(int userID) throws SQLException {
 		String searchQuery = "select fooditems.itemname,fooditems.calories from eatlog,fooditems"
-				+ " where eatlog.userID ='"+userID+"' AND eatlog.date='"+java.time.LocalDate.now()+"'"
-						+ "AND eatlog.fooditemid=fooditems.fooditemid";
+				+ " where eatlog.userID ='" + userID + "' AND eatlog.date='" + java.time.LocalDate.now() + "'"
+				+ "AND eatlog.fooditemid=fooditems.fooditemid";
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		rs = stmt.executeQuery(searchQuery);
 		return rs;
 	}
-	
-	//use method to get the number of calories consumed so far
+
+	// Use this method to get the number of calories consumed so far of 'today'
 	public static int getConsumedCalories(int userID) throws SQLException {
 		int caloriesConsumed = 0;
 		rs = getTodaysLogs(userID);
-		while(rs.next()) {
+		while (rs.next()) {
 			caloriesConsumed += rs.getInt("calories");
-			
+
 		}
 		return caloriesConsumed;
 	}
+
 	
-	//recommendation based on remaining calories and past eating logs
-	public static ArrayList getRecommendations(int userID) throws SQLException {
-		ArrayList<?> recommendations = new ArrayList<>();
-		List<Integer> sortCount = new ArrayList<Integer>();
-		int fruitCount = 0;
-		int vegetableCount = 0;
-		int gbnCount = 0; // grains, beans and nuts
-		int meatCount = 0; // meat and poultry
-		int seafoodCount = 0;
-		int dairyCount = 0;
+	// input userID
+	//return top 2 food types user eats based on past 20 logs
+	//helped method for recommendation
+	public static String[] getLogPattern(int userID) throws SQLException {
+
+		String[] keyValues = new String[2];
+		HashMap<String, Integer> sortCount = new HashMap();
+		int carbohydrateCount = 0;
+		int proteinCount = 0;
+		int milkDairyCount = 0; // milk 
+		int fruitVegCount = 0; // fruit and vegetables
+		int fatSugarCount = 0;
 		int otherCount = 0;
-		//get the latest 20 eat logs
-		String searchQuery = "SELECT fooditems.type"
-				+ " from eatlog where userid = '"+userID+"' "
-						+ "AND fooditems.fooditemid=eatlog.fooditemid"
-						+ " ORDER BY logid DESC LIMIT 20";
+
+		// get the latest 20 eat logs
+		String searchQuery = "SELECT fooditems.type" + " from eatlog,fooditems where userid = '" + userID + "' "
+				+ "AND fooditems.fooditemid=eatlog.fooditemid" + " ORDER BY logid DESC LIMIT 20";
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		rs = stmt.executeQuery(searchQuery);
 		while (rs.next()) {
-			if(rs.getString("type").equals("Fruit")) {
-				fruitCount ++;
+			if (rs.getString("type").equals("Carbohydrate")) {
+				carbohydrateCount++;
+			} else if (rs.getString("type").equals("Protein")) {
+				proteinCount++;
+			} else if (rs.getString("type").equals("Milk and Dairy")) {
+				milkDairyCount++;
+			} else if (rs.getString("type").contains("Fruit")|| (rs.getString("type").contains("Vegetable"))) {
+				fruitVegCount++;
+			} else if (rs.getString("type").equals("Fats and Sugar")) {
+				fatSugarCount++;
+			} else { 
+				otherCount++;
 			}
-			else if (rs.getString("type").equals("Vegetable")) {
-				vegetableCount ++;
-			}
-			else if (rs.getString("type").equals("Grains, Beans and Nuts")) {
-				gbnCount ++;
-				
-			}
-			else if (rs.getString("type").equals("Meat and Poultry")) {
-				meatCount ++;
-			}
-			else if (rs.getString("type").equals("Fish and Seafood")) {
-				seafoodCount ++;
-			}
-			else if (rs.getString("type").equals("Dairy")) {
-				dairyCount ++;
-			}
-			else {
-				otherCount ++;
-			}
-			
-			//sort out the counts and find what has the highest count
-			//with the highest count, get the meat type and calories remaining
-			
 		}
-		return recommendations;
+			
+			sortCount.put("Carbohydrate", carbohydrateCount);
+			sortCount.put("Protein", proteinCount);
+			sortCount.put("Milk and Dairy", milkDairyCount);
+			sortCount.put("Fruit and Vegetable", fruitVegCount);
+			sortCount.put("Fats and Sugars", fatSugarCount);
+			sortCount.put("Other", otherCount);
+
+			//get the two top food item type which has been logged the most by user
+			
+			int maxValue = (Collections.max(sortCount.values()));
+			
+			sortCount.forEach((k, v) -> {
+				if (v.equals(maxValue)) {
+					keyValues[0] = k;
+
+				}
+
+			});
+
+			sortCount.remove(keyValues[0]);
+			int maxValue2 = (Collections.max(sortCount.values())); // get new max value
+			sortCount.forEach((k, v) -> {
+				if (v.equals(maxValue2)) {
+					//System.out.println(k);
+					keyValues[1] = k;
+
+				}
+
+				// algorithm flawed if multiple variables have same max value
+
+			});
+			return keyValues;
+		}
+		// sort out the counts and find what has the highest count
+		// with the highest count, get the meat type and calories remaining
+		
+	
+	
+	//method to get recipe ids, given food item id
+	//helper method for recommendations
+	public static ResultSet getRecipeIDsFromFoodItemType(String type) throws SQLException {
+		String searchQuery = "SELECT r.recipeid\r\n" + 
+				"FROM recipe as r, recipeitems as ri, fooditems as fi\r\n" + 
+				"WHERE r.recipeid = ri.recipeid\r\n" + 
+				"AND ri.fooditemid = fi.fooditemid\r\n" + 
+				"AND fi.type = '"+type+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		return rs;
+		
+	}
+	
+	//get total calories of a recipe dish 
+	
+	public static int caloriesGivenRecipeID(int recipeID) throws SQLException {
+		int totalCalories = 0;
+		String searchQuery = "SELECT r.recipeid,r.recipename, r.recipedescription, SUM(fi.calories) as Calories\r\n" + 
+				"FROM recipe as r, recipeitems as ri, fooditems as fi\r\n" + 
+				"WHERE r.recipeid = ri.recipeid\r\n" + 
+				"AND ri.fooditemid = fi.fooditemid\r\n" + 
+				"AND r.recipeid ="+recipeID+" \r\n" + 
+				"GROUP BY r.recipename, r.recipeid\r\n" + 
+				"ORDER BY Calories DESC";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		while(rs.next()) {
+			totalCalories = rs.getInt("Calories");
+		}
+		return totalCalories;
 		
 	}
 
+	public static ArrayList<RecipeBean> getRecommendations (UserBean bean) throws SQLException{
+		ArrayList<RecipeBean> recommendations = new ArrayList<>();
+
+		int typeOneCount = 0; // only want 3 recipes in array thus when this count hits 3 stop
+		int typeTwoCount = 0;
+		int userID = getUserID(bean); //used to get calories
+		int remainingCalories = calculateBMR(bean) - getConsumedCalories(userID); // remaining calories
+		String typeOne = getLogPattern(userID)[0]; // get first food item type
+		String typeTwo = getLogPattern(userID)[1]; // get second food item type
+		ResultSet typeOneResults = getRecipeIDsFromFoodItemType(typeOne); //holds a list of recipeids
+		ResultSet typeTwoResults = getRecipeIDsFromFoodItemType(typeTwo);
+		
+		//need to filter out results 
+		//so get list of recipes that have calories under remaining
+		
+		while(typeOneResults.next()) {
+			int recipeID = typeOneResults.getInt("recipeid");
+			if(caloriesGivenRecipeID(recipeID)<= remainingCalories) {
+				
+				RecipeBean recipe = getRecipeBean(recipeID);
+				recipe.setRecipeCalories(caloriesGivenRecipeID(recipeID));
+				recommendations.add(recipe);
+				typeOneCount ++;
+			}	
+		}
+		
+		while(typeTwoResults.next()) {
+			int recipeID = typeTwoResults.getInt("recipeid");
+			if(caloriesGivenRecipeID(recipeID)<= remainingCalories) {
+				
+				RecipeBean recipe = getRecipeBean(recipeID);
+				recipe.setRecipeCalories(caloriesGivenRecipeID(recipeID));
+				recommendations.add(recipe);
+				typeTwoCount ++;
+			}	
+		}	
+		for (int i = 0; i<recommendations.size(); i++) {
+			System.out.println("RECIPE NAME: " +recommendations.get(i).getRecipeName());
+		}
+		return recommendations;
+	}
+	
+	public static ResultSet getRecipeFoodItems(int recipeID) throws SQLException {
+		String searchQuery = "SELECT fi.itemname\r\n" + 
+				"FROM recipe as r, recipeitems as ri, fooditems as fi\r\n" + 
+				"WHERE r.recipeid = ri.recipeid\r\n" + 
+				"AND ri.fooditemid = fi.fooditemid\r\n" + 
+				"AND r.recipeid = '"+recipeID+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		return rs;
+	}
 }

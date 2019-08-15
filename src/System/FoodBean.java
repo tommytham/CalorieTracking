@@ -6,7 +6,7 @@ public class FoodBean {
 	private String itemDescription;
 	private int Calories;
 	private String type;
-	private float servingSize;
+	private String servingSize;
 	public String getItemName() {
 		return itemName;
 	}
@@ -31,10 +31,10 @@ public class FoodBean {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public float getServingSize() {
+	public String getServingSize() {
 		return servingSize;
 	}
-	public void setServingSize(float servingSize) {
+	public void setServingSize(String servingSize) {
 		this.servingSize = servingSize;
 	}
 	
