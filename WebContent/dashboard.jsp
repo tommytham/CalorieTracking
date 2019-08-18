@@ -48,7 +48,7 @@ Goal: <%= currentUser.getGoal() %> <%= recommendations.size()%>
 <br>
 <br>
 
-<button id="UpdatePersonalInfo"> Update information</button>
+<button id="UpdatePersonalInfo" onclick="openPage('updateProfile.jsp')"> Update information</button>
 </div> 
 
 <!-- update info modal -->
@@ -95,7 +95,7 @@ Foods eaten today: <br><br>
 
 <button id="firstRecommend"> <%= recommendations.get(0).getRecipeName() %> </button> <br>
 <button id="secondRecommend"><%= recommendations.get(1).getRecipeName() %></button> <br>
-<button id="thirdRecommend">Item 3</button>
+<button id="thirdRecommend"><%=recommendations.get(2).getRecipeName() %></button>
 
 </div>
 <%} %>
@@ -158,34 +158,6 @@ window.onhashchange=function(){
 
 	</script>
 
-<script>
-// Get the modal
-var modal = document.getElementById("myModal");
-
-// Get the button that opens the modal
-var btn = document.getElementById("UpdatePersonalInfo");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-</script>	
-
 
 <!-- script for recommendation buttons -->
 <script>
@@ -216,6 +188,6 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
-</script>	
+</scr==ipt>	
 
 </html>

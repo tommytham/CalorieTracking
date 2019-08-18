@@ -1,5 +1,10 @@
 package System;
 
+/***
+ * Bean that represents the user
+ * @author tommy
+ *
+ */
 public class UserBean {
 	
     private String username;

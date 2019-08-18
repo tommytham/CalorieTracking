@@ -2,10 +2,13 @@ package System;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class testing {
 
@@ -90,6 +93,13 @@ public class testing {
 		
 		ArrayList<RecipeBean> hoo = recs;
 		//System.out.println(hoo.size());
+
+		System.out.println(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(LocalDate.now()));
+		String todaysDate = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(LocalDate.now());
+		String date = "2019-08-18";
+		if(date.equals(todaysDate)) {
+			System.out.println("matching date");
+		}
 		
 	}
 	

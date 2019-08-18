@@ -1,5 +1,10 @@
 package System;
 
+/***
+ * Bean that represents a food item
+ * @author tommy
+ *
+ */
 public class FoodBean {
 
 	private String itemName;

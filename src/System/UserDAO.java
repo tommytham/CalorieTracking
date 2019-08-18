@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -161,7 +163,7 @@ public class UserDAO {
 		// insert statement
 		String createQuery = "INSERT INTO Progression (userID, weight, age, height, goal, activityLevel, date, gender)"
 				+ " values('" + userID + "','" + startingWeight + "','" + age + "','" + height + "','" + goal + "','"
-				+ activityLevel + "','" + java.time.LocalDate.now() + "','" + gender + "')";
+				+ activityLevel + "','" + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "','" + gender + "')";
 		stmt.executeUpdate(createQuery);
 	}
 
@@ -283,11 +285,39 @@ public class UserDAO {
 		}
 		return recipeID;
 	}
-	// call getitemid and getuserid if need to
+	/***
+	 * pass in new weight and the date user has picked
+	 * @param bean
+	 * @param weight
+	 * @param date
+	 * @throws SQLException
+	 */
+	public static void insertWeightProgress(UserBean bean, int weight, String date) throws SQLException {
+		String activityLevel = bean.getActivityLevel();
+		String gender = bean.getGender();
+		String goal = bean.getGoal();
+		int height = bean.getHeight();
+		int age = bean.getAge();
 
+		// get userid of current user
+		int userID = getUserID(bean);
+
+		System.out.println("THE USER ID RETRIEVED IS: " + userID);
+
+		// insert statement
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		String createQuery = "INSERT INTO Progression (userID, weight, age, height, goal, activityLevel, date, gender)"
+				+ " values('" + userID + "','" + weight + "','" + age + "','" + height + "','" + goal + "','"
+				+ activityLevel + "','" + date + "','" + gender + "')";
+		stmt.executeUpdate(createQuery);
+		
+	}
+	
+	// call getitemid and getuserid methods if need to
 	public static void insertEatLog(int userID, int itemID) throws SQLException {
 		String insertQuery = "INSERT INTO eatlog (userid,fooditemid,date) values('" + userID + "','" + itemID + "','"
-				+ java.time.LocalDate.now() + "')";
+				+ LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "')";
 
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
@@ -310,7 +340,7 @@ public class UserDAO {
 		while(rs.next()) {
 			System.out.println(rs.getInt("fooditemid"));
 			String insertQuery = "INSERT INTO eatlog (userid,fooditemid,date) values('" + userID + "','" + rs.getInt("fooditemid") + "','"
-					+ java.time.LocalDate.now() + "')";
+					+ LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "')";
 			stmt2.executeUpdate(insertQuery);
 			
 		}
@@ -357,7 +387,7 @@ public class UserDAO {
 	// Use this method to display foods eaten at dash board
 	public static ResultSet getTodaysLogs(int userID) throws SQLException {
 		String searchQuery = "select fooditems.itemname,fooditems.calories from eatlog,fooditems"
-				+ " where eatlog.userID ='" + userID + "' AND eatlog.date='" + java.time.LocalDate.now() + "'"
+				+ " where eatlog.userID ='" + userID + "' AND eatlog.date='" + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "'"
 				+ "AND eatlog.fooditemid=fooditems.fooditemid";
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
@@ -535,6 +565,16 @@ public class UserDAO {
 				"WHERE r.recipeid = ri.recipeid\r\n" + 
 				"AND ri.fooditemid = fi.fooditemid\r\n" + 
 				"AND r.recipeid = '"+recipeID+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		return rs;
+	}
+	
+	public static ResultSet getProgress(int userID) throws SQLException {
+		String searchQuery = "SELECT * \r\n" + 
+				"FROM progression\r\n" + 
+				"WHERE userid = '"+userID+"'";
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		rs = stmt.executeQuery(searchQuery);
