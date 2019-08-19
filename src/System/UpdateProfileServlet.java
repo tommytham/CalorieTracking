@@ -36,12 +36,13 @@ public class UpdateProfileServlet extends HttpServlet {
 			try {
 				int newWeight = Integer.parseInt(request.getParameter("updateWeight")); 
 				String date = request.getParameter("calendarDate");
-				
+				int userID = UserDAO.getUserID(currentUser);
 				//need to check if already progress exists on the date picked
 				//do this by querying database select where user id = ? and date = calendarDate
 				//if  result set empty then insert, else update
-				if(date.equals(todaysDate)) {
+				if(UserDAO.checkProgressExists(userID, date)) {
 					currentUser.setCurrentWeight(newWeight);
+					UserDAO.updateExistingProgress(userID, date, newWeight);
 					//update sql query
 					session.setAttribute("currentSessionUser", currentUser); 
 					response.sendRedirect("dashboard.jsp");

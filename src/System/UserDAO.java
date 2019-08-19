@@ -127,7 +127,7 @@ public class UserDAO {
 
 		// validation
 		if (bean.getUsername().length() > 3 && bean.getPassword().length() > 3 && bean.getFirstName().length() > 1
-				&& bean.getLastName().length() > 1) {
+				&& bean.getLastName().length() > 1 && !UserDAO.checkUsernameExists(username)) {
 			try {
 				// connect to DB
 				currentCon = ConnectionManager.getConnection();
@@ -136,9 +136,9 @@ public class UserDAO {
 
 				bean.setValid(true);
 
-			} finally {
-
-			}
+			} finally {}
+			
+			
 
 		} else {
 			bean.setValid(false);
@@ -225,7 +225,11 @@ public class UserDAO {
 
 	public static UserBean getUserBean(UserBean bean) throws SQLException {
 		int userID = getUserID(bean);
-		String searchQuery = "select * from progression where userid='" + userID + "'";
+		String searchQuery = "SELECT *\r\n" + 
+				"FROM Progression\r\n" + 
+				"WHERE userID = '"+userID+"'\r\n" + 
+				"ORDER BY date DESC\r\n" + 
+				"LIMIT 1";
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		rs = stmt.executeQuery(searchQuery);
@@ -572,12 +576,49 @@ public class UserDAO {
 	}
 	
 	public static ResultSet getProgress(int userID) throws SQLException {
-		String searchQuery = "SELECT * \r\n" + 
-				"FROM progression\r\n" + 
-				"WHERE userid = '"+userID+"'";
+		String searchQuery = "SELECT *\r\n" + 
+				"FROM Progression\r\n" + 
+				"WHERE userID = '"+userID+"'\r\n" + 
+				"ORDER BY date ASC";
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		rs = stmt.executeQuery(searchQuery);
 		return rs;
+	}
+	
+	public static boolean checkProgressExists(int userID, String inputDate) throws SQLException {
+		boolean exists = false;
+		String searchQuery = "SELECT * \r\n" + 
+				"FROM progression\r\n" + 
+				"WHERE userid = '"+userID+"' AND date ='" +inputDate+ "'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		while(rs.next()) {
+			exists = true;
+		}
+		return exists;
+	}
+	
+	public static boolean checkUsernameExists(String username) throws SQLException {
+		boolean exists = false;
+		String searchQuery = "SELECT * FROM users WHERE username ='"+username+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		while(rs.next()) {
+			exists = true;
+		}
+		return exists;
+	}
+	
+	public static void updateExistingProgress(int userID,String inputDate, int newWeight) throws SQLException {
+	
+		String updateQuery = "UPDATE Progression\r\n" + 
+				"SET weight = '"+newWeight+"'\r\n" + 
+				"WHERE userid = '" +userID+"' AND date='"+inputDate+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		stmt.executeUpdate(updateQuery);
 	}
 }

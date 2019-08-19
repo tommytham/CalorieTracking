@@ -36,12 +36,16 @@ public class CreateAccountServlet extends HttpServlet {
 		try {
 			user = UserDAO.createUser(user);
 			
-			if (user.isValid() && validatePass.equals(user.getPassword())){
+			if (user.isValid() && validatePass.equals(user.getPassword()) && !UserDAO.checkUsernameExists(user.getUsername())){
 				
 			response.sendRedirect("LoginPage.jsp"); // logged-in page
 			}
 			else if(!validatePass.equals(user.getPassword())) {
 				request.setAttribute("errorMessage", "Passwords do not match, please try again.");
+				request.getRequestDispatcher("/createAccount.jsp").forward(request, response);
+			}
+			else if(UserDAO.checkUsernameExists(user.getUsername())) {
+				request.setAttribute("errorMessage", "Username already exists.");
 				request.getRequestDispatcher("/createAccount.jsp").forward(request, response);
 			}
 			else {

@@ -13,7 +13,6 @@
 <html>
             <% UserBean currentUser = (UserBean) (session.getAttribute("currentSessionUser"));
             	currentUser = UserDAO.getUserBean(currentUser);
-            	System.out.println(currentUser.getGender());
                int BMR = UserDAO.calculateBMR(currentUser);
                currentUser.setBMR(BMR);
                double percentage =  (((double) (UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)))/currentUser.getBMR())*100);
@@ -49,6 +48,7 @@ Goal: <%= currentUser.getGoal() %> <%= recommendations.size()%>
 <br>
 
 <button id="UpdatePersonalInfo" onclick="openPage('updateProfile.jsp')"> Update information</button>
+<button onclick="openPage('progressReport.jsp')"> Progress Report</button>
 </div> 
 
 <!-- update info modal -->
