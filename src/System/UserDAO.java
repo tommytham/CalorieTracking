@@ -390,7 +390,7 @@ public class UserDAO {
 
 	// Use this method to display foods eaten at dash board
 	public static ResultSet getTodaysLogs(int userID) throws SQLException {
-		String searchQuery = "select fooditems.itemname,fooditems.calories from eatlog,fooditems"
+		String searchQuery = "select eatlog.logid, fooditems.itemname,fooditems.calories from eatlog,fooditems"
 				+ " where eatlog.userID ='" + userID + "' AND eatlog.date='" + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "'"
 				+ "AND eatlog.fooditemid=fooditems.fooditemid";
 		currentCon = ConnectionManager.getConnection();
@@ -620,5 +620,12 @@ public class UserDAO {
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		stmt.executeUpdate(updateQuery);
+	}
+	
+	public static void removeEatLog(int logid) throws SQLException {
+		String removeQuery = "DELETE FROM EatLog where logid = '"+logid+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		stmt.executeUpdate(removeQuery);
 	}
 }

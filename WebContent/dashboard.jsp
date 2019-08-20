@@ -137,7 +137,7 @@ Total calories: <%=UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)) %
 
 
 <button id="logFood" onclick="openPage('logFood.jsp')"> Log Food</button>
-
+<button id="logFood" onclick="openPage('removeLog.jsp')"> Remove Log</button>
 </body>
 
 <script>
