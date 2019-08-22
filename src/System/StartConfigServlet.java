@@ -20,8 +20,6 @@ public class StartConfigServlet extends HttpServlet {
 			throws ServletException, java.io.IOException {
 		HttpSession session = request.getSession(true); //gets current session
 		UserBean currentUser = (UserBean) (session.getAttribute("currentSessionUser")); //gets bean from previous session (login page) and assigns to new bean
-		//test 
-		System.out.println(currentUser.getFirstName());
 		if(request.getParameter("activity").length()>0 && request.getParameter("height").length()>0 && request.getParameter("age").length()>0) {
 			currentUser.setActivityLevel(request.getParameter("activity"));
 			currentUser.setCurrentWeight(Float.parseFloat(request.getParameter("weight")));

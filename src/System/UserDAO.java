@@ -634,6 +634,22 @@ public class UserDAO {
 		return rs;
 	}
 	
+	public static int getLatestProgressID(int userID) throws SQLException {
+		int progressID = 0;
+		String searchQuery = "SELECT * \r\n" + 
+				"FROM progression\r\n" + 
+				"WHERE userid = '"+userID+"'\r\n" + 
+				"ORDER BY DATE DESC\r\n" + 
+				"LIMIT 1";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		while(rs.next()) {
+			progressID = rs.getInt("progressionid");
+		}
+		return progressID;
+	}
+	
 	public static boolean checkProgressExists(int userID, String inputDate) throws SQLException {
 		boolean exists = false;
 		String searchQuery = "SELECT * \r\n" + 
@@ -668,6 +684,16 @@ public class UserDAO {
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		stmt.executeUpdate(updateQuery);
+	}
+	
+	public static void updateLatestProgress(int progressionID,String activitylevel, float weight, String goal, int height, int age) throws SQLException {
+		
+		String updateQuery = "UPDATE Progression\r\n" + 
+				"SET activitylevel = '"+activitylevel+"', weight = '"+weight+"', goal = '"+goal+"', height = '"+height+"', age = '"+age+"'\r\n" + 
+				"WHERE progressionid = '"+progressionID+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt2 = currentCon.createStatement();
+		stmt2.executeUpdate(updateQuery);
 	}
 	
 	public static void removeEatLog(int logID) throws SQLException {
