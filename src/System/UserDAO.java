@@ -23,6 +23,7 @@ public class UserDAO {
 	static ResultSet rs = null;
 	static Statement stmt = null;
 	static Statement stmt2 = null;
+	static Statement stmt3 = null;
 	
 	public static int getUserID(UserBean bean) throws SQLException {
 		String username = bean.getUsername();
@@ -183,7 +184,6 @@ public class UserDAO {
 	}
 
 	public static int calculateBMR(UserBean bean) throws SQLException {
-		int userID = getUserID(bean);
 		int BMR;
 
 		if (bean.getGender().equals("Male")) {
@@ -351,8 +351,13 @@ public class UserDAO {
 
 	}
 
-	// input id
-	// return bean
+	/***
+	 * pass in itemId, will return bean contain information
+	 * item name, description, calories, type and serving size
+	 * @param itemID
+	 * @return foodbean
+	 * @throws SQLException
+	 */
 	public static FoodBean getFoodBean(int itemID) throws SQLException {
 		String searchQuery = "select * from fooditems where fooditemid ='" + itemID + "'";
 		currentCon = ConnectionManager.getConnection();
@@ -409,11 +414,57 @@ public class UserDAO {
 		}
 		return caloriesConsumed;
 	}
+	
+	/***
+	 * 
+	 * @param userID
+	 * @return result set of the total calories of the days where user logged food consumption
+	 * @throws SQLException
+	 */
+	public static ResultSet getAllCalorieIntakes(int userID) throws SQLException {
+		String searchQuery = "SELECT eatlog.date, SUM(fi.calories) as TotalCalories\r\n" + 
+				"FROM eatlog, fooditems as fi\r\n" + 
+				"WHERE eatlog.fooditemid = fi.fooditemid\r\n" + 
+				"AND eatlog.userid = '"+userID+"'\r\n" + 
+				"GROUP BY eatlog.date\r\n" + 
+				"ORDER BY eatlog.date ASC";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		return rs;
+	}
+	
+	public static HashMap<String,Integer> getAllCalorieGoals(int userID) throws SQLException {
+		HashMap<String,Integer> calorieGoals = new HashMap<>();
+		UserBean bean = new UserBean();
+		String searchQuery = "SELECT * \r\n" + 
+				"FROM progression\r\n" + 
+				"WHERE userid = '"+userID+"'\r\n" + 
+				"ORDER BY DATE ASC";
+		currentCon = ConnectionManager.getConnection();
+		stmt2 = currentCon.createStatement();
+		rs = stmt2.executeQuery(searchQuery);
+
+		while(rs.next()) {
+			System.out.println("check here");
+			System.out.print(" ProgressID: "+rs.getInt("progressionid"));
+			bean.setCurrentWeight(rs.getInt("weight"));
+			bean.setAge(rs.getInt("age"));
+			bean.setHeight(rs.getInt("height"));
+			bean.setGoal(rs.getString("goal"));
+			bean.setActivityLevel(rs.getString("activitylevel"));
+			bean.setGender(rs.getString("gender"));
+			int calorieGoal = UserDAO.calculateBMR(bean);
+			calorieGoals.put(rs.getString("date"),calorieGoal);
+			
+		}
+		return calorieGoals;
+	}
 
 	
 	// input userID
 	//return top 2 food types user eats based on past 20 logs
-	//helped method for recommendation
+	//helper method for recommendation
 	public static String[] getLogPattern(int userID) throws SQLException {
 
 		String[] keyValues = new String[2];
@@ -557,9 +608,6 @@ public class UserDAO {
 				typeTwoCount ++;
 			}	
 		}	
-		for (int i = 0; i<recommendations.size(); i++) {
-			System.out.println("RECIPE NAME: " +recommendations.get(i).getRecipeName());
-		}
 		return recommendations;
 	}
 	
@@ -622,8 +670,15 @@ public class UserDAO {
 		stmt.executeUpdate(updateQuery);
 	}
 	
-	public static void removeEatLog(int logid) throws SQLException {
-		String removeQuery = "DELETE FROM EatLog where logid = '"+logid+"'";
+	public static void removeEatLog(int logID) throws SQLException {
+		String removeQuery = "DELETE FROM EatLog where logid = '"+logID+"'";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		stmt.executeUpdate(removeQuery);
+	}
+	
+	public static void removeProgressLog(int progressID) throws SQLException {
+		String removeQuery = "DELETE FROM progression  where progressionid = '"+progressID+"'";
 		currentCon = ConnectionManager.getConnection();
 		stmt = currentCon.createStatement();
 		stmt.executeUpdate(removeQuery);

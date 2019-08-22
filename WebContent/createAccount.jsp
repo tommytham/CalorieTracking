@@ -9,7 +9,7 @@
 </head>
 <body>
 	<h1>Create Account</h1>
-
+<div class="borderOne">
 	<div class="createAccount">
 		<form action="CreateAccountServlet">
 
@@ -26,6 +26,7 @@
 
 		</form>
 	</div>
+</div>
 
 	<script type="text/javascript">
 		function openPage(pageURL) {

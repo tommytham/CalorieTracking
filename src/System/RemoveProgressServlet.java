@@ -1,7 +1,7 @@
 package System;
 
 /***
- * Servlet that enables the user to remove a logged item
+ * Servlet that enables the user to remove a progression log
  */
 
 import java.sql.SQLException;
@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/RemoveLogServlet")
-public class RemoveLogServlet extends HttpServlet {
+@WebServlet("/RemoveProgressServlet")
+public class RemoveProgressServlet extends HttpServlet {
 	
 
 	/**
@@ -26,11 +26,11 @@ public class RemoveLogServlet extends HttpServlet {
 			throws ServletException, java.io.IOException {
 		
 
-		String[] loggedFoods = request.getParameterValues("loggedItem");
-		if(loggedFoods.length>0) {
-			for(String value: loggedFoods) {
+		String[] loggedProgress = request.getParameterValues("progress");
+		if(loggedProgress.length>0) {
+			for(String value: loggedProgress) {
 				try {
-					UserDAO.removeEatLog(Integer.parseInt(value));
+					UserDAO.removeProgressLog(Integer.parseInt(value));
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 				} catch (SQLException e) {
@@ -38,12 +38,12 @@ public class RemoveLogServlet extends HttpServlet {
 				}
 			}
 			request.setAttribute("successMessage", "Removed!");
-			request.getRequestDispatcher("/removeLog.jsp").forward(request, response);
+			request.getRequestDispatcher("/progressReport.jsp").forward(request, response);
 		}
 	
 		else {
 			request.setAttribute("errorMessage", "Please select");
-			request.getRequestDispatcher("/removeLog.jsp").forward(request, response);
+			request.getRequestDispatcher("/progressReport.jsp").forward(request, response);
 		}
 
 	}

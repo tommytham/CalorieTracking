@@ -12,12 +12,14 @@
 <body>
 <input type="button" value="Go Back" onclick="openPage('dashboard.jsp')" />
 
+<div class="borderOne">
 <form action="UpdateProfileServlet">
 Weight: 
 <input type="number" placeholder="enter weight (kg)" name="updateWeight" onkeypress="return checkNumber(event)" min=1> 
-<p>Date: <input type="text" id="datepicker" name="calendarDate"></p>
+<p>Date: <input type="text" id="datepicker" name="calendarDate" readonly='true'></p>
 <br><br><input type="submit" value="Update Weight"> 
 </form>
+</div>
 <div class="error">${errorMessage}</div>
 
 </body>
@@ -40,7 +42,10 @@ Weight:
   
   <script>
   $( function() {
-    $( "#datepicker" ).datepicker({dateFormat: 'yy-mm-dd'});
+    $( "#datepicker" ).datepicker({dateFormat: 'yy-mm-dd',
+    	maxDate: '0'});
+ 
+
   } );
   </script>
   

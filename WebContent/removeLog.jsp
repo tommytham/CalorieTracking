@@ -20,11 +20,12 @@
 <div class="table">
 
 
-<table width="500" align="center" >
-<tr> <th>Item Name</th> <th> Calories </th> </tr>
+
 
 <!-- table contents -->
 <form action="RemoveLogServlet">
+<table width="500" align="center" >
+<tr> <th>Item Name</th> <th> Calories </th> </tr>
 <% 
 ResultSet rs = null;
 rs = UserDAO.getTodaysLogs(UserDAO.getUserID(currentUser));

@@ -10,6 +10,7 @@
 <!DOCTYPE html>
 <link href="styleSheet.css" rel="stylesheet" type="text/css">
 
+
 <html>
             <% UserBean currentUser = (UserBean) (session.getAttribute("currentSessionUser"));
             	currentUser = UserDAO.getUserBean(currentUser);
@@ -17,56 +18,40 @@
                currentUser.setBMR(BMR);
                double percentage =  (((double) (UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)))/currentUser.getBMR())*100);
 				if(percentage>100){
-				percentage = 100;}%>
+				percentage = 100;}
 				
-				<%
 				ArrayList<RecipeBean> recommendations = UserDAO.getRecommendations(currentUser);
-
-				//RecipeBean recommendThree = recommendations.get(2);
-				
 				%>
 				
             
-           
 <head> 
 <meta charset="ISO-8859-1">
 <title>Dashboard </title>
+
 </head>
 <body>
+<form action="LogoutServlet">
+<button class="logout"> Log Out</button>
+</form>
 <h1>Hello <%= currentUser.getFirstName() + " " + currentUser.getLastName() + ""%>!</h1>
 
 <!-- User profile information -->
 <div>
 <div class="profile" style="float:left">
-Your height: <%= currentUser.getHeight() %> cm <br>
-Your weight: <%= currentUser.getCurrentWeight() %> kg <br>
-Goal: <%= currentUser.getGoal() %> <%= recommendations.size()%>
+Height: <%= currentUser.getHeight() %> cm <br>
+Weight: <%= currentUser.getCurrentWeight() %> kg <br>
+Gender: <%= currentUser.getGender() %><br>
+Age: <%= currentUser.getAge() %> <br>
+Activity levels : <%= currentUser.getActivityLevel() %> <br>
+Goal: <%= currentUser.getGoal() %> weight <%= recommendations.size()%>
 
-<br>
-<br>
-<br>
+
 <br>
 
 <button id="UpdatePersonalInfo" onclick="openPage('updateProfile.jsp')"> Update information</button>
 <button onclick="openPage('progressReport.jsp')"> Progress Report</button>
 </div> 
 
-<!-- update info modal -->
-<div id="myModal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <p>Some text in the Modal..</p>
-    <select>
-  <option value="updateHeight">Update height</option>
-  <option value="updateWeight">Update weight</option>
-  <option value="updateGoal">Update goal</option>
-  <option value="updateActivity">Update activity</option>
-</select>
-  </div>
-
-</div>
 
 <!-- Calorie bar and information -->
 <div class ="calories" style="display:inline-block">
@@ -81,7 +66,8 @@ Calories remaining for today:  <%= currentUser.getBMR()-UserDAO.getConsumedCalor
 <br>
 
 <!-- foods eaten + recommendations -->
-<form>
+<div class="borderOne">
+
 Foods eaten today: <br><br>
 <div class="table">
 
@@ -93,13 +79,73 @@ Foods eaten today: <br><br>
 <%if(recommendations.size() != 0){ %>
 <div style="float:right">Don't know what to eat with remaining calories? <br>
 
-<button id="firstRecommend"> <%= recommendations.get(0).getRecipeName() %> </button> <br>
-<button id="secondRecommend"><%= recommendations.get(1).getRecipeName() %></button> <br>
-<button id="thirdRecommend"><%=recommendations.get(2).getRecipeName() %></button>
+<!-- Recommend 1 -->
+<div class="w3-container">
+  <button onclick="document.getElementById('firstRecommend').style.display='block'" class="w3-button w3-black"><%=recommendations.get(0).getRecipeName()%></button>
+
+  <div id="firstRecommend" class="w3-modal">
+    <div class="w3-modal-content">
+      <div class="w3-container">
+        <span onclick="document.getElementById('firstRecommend').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+        <p><%= recommendations.get(0).getRecipeName() %></p>
+        <p><%= recommendations.get(0).getRecipeDescription() %></p>
+        <%ResultSet fooditems = UserDAO.getRecipeFoodItems(UserDAO.getRecipeID(recommendations.get(0).getRecipeName()));
+        while(fooditems.next()){
+        %>
+        <p><%=fooditems.getString("itemname") %></p>
+		<%} %>
+        <p><%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(0).getRecipeName()))%></p>
+      </div>
+    </div>
+  </div>
+</div> <br>
+
+<!-- Recommend 2 -->
+<div class="w3-container">
+  <button onclick="document.getElementById('secondRecommend').style.display='block'" class="w3-button w3-black"><%=recommendations.get(1).getRecipeName()%></button>
+
+  <div id="secondRecommend" class="w3-modal">
+    <div class="w3-modal-content">
+      <div class="w3-container">
+        <span onclick="document.getElementById('secondRecommend').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+        <p><%= recommendations.get(1).getRecipeName() %></p>
+        <p><%= recommendations.get(1).getRecipeDescription() %></p>
+        <%ResultSet fooditems2 = UserDAO.getRecipeFoodItems(UserDAO.getRecipeID(recommendations.get(1).getRecipeName()));
+        while(fooditems2.next()){
+        %>
+        <p><%=fooditems2.getString("itemname") %></p>
+		<%} %>
+        <p><%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(1).getRecipeName()))%></p>
+      </div>
+    </div>
+  </div>
+</div> <br>
+
+<!-- Recommend 3 -->
+<div class="w3-container">
+  <button onclick="document.getElementById('thirdRecommend').style.display='block'" class="w3-button w3-black"><%=recommendations.get(2).getRecipeName()%></button>
+
+  <div id="thirdRecommend" class="w3-modal">
+    <div class="w3-modal-content">
+      <div class="w3-container">
+        <span onclick="document.getElementById('thirdRecommend').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+        <p><%= recommendations.get(2).getRecipeName() %></p>
+        <p><%= recommendations.get(2).getRecipeDescription() %></p>
+        <%ResultSet fooditems3 = UserDAO.getRecipeFoodItems(UserDAO.getRecipeID(recommendations.get(2).getRecipeName()));
+        while(fooditems3.next()){
+        %>
+        <p><%=fooditems3.getString("itemname") %></p>
+		<%} %>
+        <p><%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(2).getRecipeName()))%></p>
+      </div>
+    </div>
+  </div>
+</div> <br>
 
 </div>
 <%} %>
 
+<br><br><br>
 <!-- recommendation modal -->
 
 
@@ -132,15 +178,17 @@ while(rs.next())
 <br>
 Total calories: <%=UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)) %>
 </div>
-</form>
+</div>
 
 
 
-<button id="logFood" onclick="openPage('logFood.jsp')"> Log Food</button>
-<button id="logFood" onclick="openPage('removeLog.jsp')"> Remove Log</button>
-</body>
+<button onclick="openPage('logFood.jsp')"> Log Food</button>
+<button onclick="openPage('removeLog.jsp')"> Remove Log</button>
+<button onclick="openPage('calorieReport.jsp')"> Calorie report</button>
+
 
 <script>
+
 window.location.hash="no-back-button";
 window.location.hash="Again-No-back-button";//again because google chrome don't insert first hash into history
 
@@ -159,35 +207,10 @@ window.onhashchange=function(){
 	</script>
 
 
-<!-- script for recommendation buttons -->
-<script>
-// Get the modal
-var modal = document.getElementById("recommendModal");
 
-// Get the button that opens the modal
-var firstButton = document.getElementById("firstRecommend");
-var secondButton = document.getElementById("secondRecommend");
-var thirdButton = document.getElementById("thirdRecommend");
+  
+<!-- script for navigation bar https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_sidenav -->
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-</scr==ipt>	
 
 </html>

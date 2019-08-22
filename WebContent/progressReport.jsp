@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+ <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"
     import="System.UserDAO"
     import="java.sql.ResultSet"
@@ -27,8 +27,20 @@ String dataPoints = gsonObj.toJson(list);
 
  <head>
 <title>Progress Report</title>
+<input type="button" value="Go Back" onclick="openPage('dashboard.jsp')" />
+<br><br><br><br>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'progressReport')" id="defaultOpen"> Progress Report</button>
+  <button class="tablinks" onclick="openTab(event, 'deleteProgress')">Delete Progress</button>
+</div> <br> <br>
   </head>
   <body>
+  
+
+
+<!-- Progress Report Tab -->
+<br><br>
+<div id="progressReport" class="tabcontent" >
 <div id="chartContainer" style="height: 370px; width: 100%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <br><br>
@@ -64,6 +76,51 @@ while(progressions2.next())
 
 </table>
 </div>
+</div>
+
+</body>
+
+<!-- Delete Progress Tab -->
+<body>
+<div id="deleteProgress" class="tabcontent" >
+<div class="table" >
+<table style="width:80%" align="center">
+
+<tr> <th>Date</th> <th>Weight (kg)</th> </tr>
+
+<form action="RemoveProgressServlet">
+<% 
+ResultSet progressions3 = UserDAO.getProgress(userID); 
+while(progressions3.next())
+        {
+            %>
+                <tr>
+                     <td>
+                     
+        			<input type="checkbox" name="progress" value="<%=progressions3.getString("progressionid")%>"/><%=progressions3.getString("date")%>
+                  
+                     </td>
+                     
+                     
+                     <td>
+                     <%=Integer.toString(progressions3.getInt("weight")) %>
+                	</td>
+                </tr>
+            <% 
+        }
+    %>
+
+
+
+</table>
+
+
+<br>
+<input type="Submit"  name="removeProgress" value="Remove">
+</form>
+</div>
+</div>
+
   </body>
 </html>
 
@@ -91,3 +148,32 @@ chart.render();
  
 }
 </script>
+
+<script>
+function openTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+
+<script>
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+</script>
+		<script type="text/javascript">
+		function openPage(pageURL) {
+
+			window.location.href = pageURL;
+
+		}
+
+	</script>

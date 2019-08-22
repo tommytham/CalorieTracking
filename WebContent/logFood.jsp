@@ -22,6 +22,7 @@
   <button class="tablinks" onclick="openTab(event, 'items')" id="defaultOpen">Food Items</button>
   <button class="tablinks" onclick="openTab(event, 'recipe')">Food Recipes</button>
 </div>
+<br><br><br> <br>
 
 <div id="items" class="tabcontent" >
 <div class="table" >
@@ -118,6 +119,7 @@ while(rs2.next())
 
 </table>
 </div>
+<br><br>
 <form action="LogRecipeServlet">
 <input type="text" placeholder="enter id or recipe name" name="logRecipe"><button>Log recipe</button>
 </form>
@@ -146,7 +148,7 @@ function openTab(evt, tabName) {
   }
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
+    tablinks[i].className = tablinks[i].className.replace("active", "");
   }
   document.getElementById(tabName).style.display = "block";
   evt.currentTarget.className += " active";
@@ -156,6 +158,12 @@ function openTab(evt, tabName) {
 <script>
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
+</script>
+
+<script>
+function popupMessage() {
+  alert("I am an alert box!");
+}
 </script>
 
 </html>

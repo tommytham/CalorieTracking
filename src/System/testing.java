@@ -93,13 +93,14 @@ public class testing {
 		
 		ArrayList<RecipeBean> hoo = recs;
 		//System.out.println(hoo.size());
+		ResultSet allIntakes = UserDAO.getAllCalorieIntakes(1);
+		while(allIntakes.next()) {
+			
+			System.out.println(allIntakes.getString(("date")) + " Calorie consumed: " + allIntakes.getString("totalcalories"));
 
-		System.out.println(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(LocalDate.now()));
-		String todaysDate = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(LocalDate.now());
-		String date = "2019-08-18";
-		if(date.equals(todaysDate)) {
-			System.out.println("matching date");
+			
 		}
+		
 		
 	}
 	

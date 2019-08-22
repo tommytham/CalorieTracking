@@ -17,6 +17,7 @@
 	
 	<div class="login">
 	<h1>Login Page</h1>
+	<div class="borderOne">
 		<form action="LoginServlet" >
 			
 					
@@ -28,6 +29,7 @@
 			<input type="submit" value="Login">	<br><br>		
 		<div style="font-size: 13px">Don't have an account yet? <a href="createAccount.jsp" >Sign up here </a></div>
 		</form>
+		</div>
 		<br>
 		<div class="error">${errorMessage}</div>
 		
@@ -35,3 +37,13 @@
 </div>
 	</body>
 </html>
+
+<script>
+
+window.location.hash="no-back-button";
+window.location.hash="Again-No-back-button";//again because google chrome don't insert first hash into history
+
+window.onhashchange=function(){
+	window.location.hash="no-back-button";
+	}
+</script> 
