@@ -160,6 +160,33 @@ Foods eaten today: <br><br>
   </div>
 </div> <br>
 
+
+<%} %>
+
+<%if(recommendations.size() >= 3){ %>
+<!-- Recommend 4 -->
+<div class="w3-container">
+  <button onclick="document.getElementById('fourthRecommend').style.display='block'" class="w3-button w3-black"><%=recommendations.get(3).getRecipeName()%></button>
+
+  <div id="fourthRecommend" class="w3-modal">
+    <div class="w3-modal-content">
+      <div class="w3-container">
+        <span onclick="document.getElementById('fourthRecommend').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+        <p><%= recommendations.get(3).getRecipeName() %></p><br>
+        <%= recommendations.get(3).getRecipeDescription() %><br><br>
+        Ingredients:
+        <%ResultSet fooditems4 = UserDAO.getRecipeFoodItems(UserDAO.getRecipeID(recommendations.get(3).getRecipeName()));
+        while(fooditems4.next()){
+        %>
+        <%=fooditems4.getString("itemname") %>,
+		<%} %>
+		<br><br>
+        Calories <%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(3).getRecipeName()))%></p>
+      </div>
+    </div>
+  </div>
+</div> <br>
+
 </div>
 <%} %>
 

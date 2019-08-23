@@ -5,7 +5,7 @@ public class RecipeBean {
 	private int recipeID;
 	private String recipeName;
 	private String recipeDescription;
-	private int recipeCalories;
+	private Integer recipeCalories;
 	
 	
 	public int getRecipeID() {
@@ -26,10 +26,10 @@ public class RecipeBean {
 	public void setRecipeDescription(String recipeDescription) {
 		this.recipeDescription = recipeDescription;
 	}
-	public int getRecipeCalories() {
+	public Integer getRecipeCalories() {
 		return recipeCalories;
 	}
-	public void setRecipeCalories(int recipeCalories) {
+	public void setRecipeCalories(Integer recipeCalories) {
 		this.recipeCalories = recipeCalories;
 	}
 

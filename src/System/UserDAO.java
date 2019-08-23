@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -624,6 +625,10 @@ public class UserDAO {
 				
 			}	
 		}	
+		Comparator<RecipeBean> compareByCalorie = (RecipeBean r1, RecipeBean r2) ->
+        r1.getRecipeCalories().compareTo( r2.getRecipeCalories() );
+
+        Collections.sort(recommendations, Collections.reverseOrder(compareByCalorie));
 		return recommendations;
 	}
 	
