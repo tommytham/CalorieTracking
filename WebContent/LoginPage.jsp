@@ -9,20 +9,19 @@
 <link href="styleSheet.css" rel="stylesheet" type="text/css">
 <html>
 	<head>
-                                <meta http-equiv="Content-Type" content="text/html; charset=windows-1256">
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1256">
 		<title>Login Page</title>
 	</head>
 
 	<body>
 	
 	<div class="login">
-	<h1>Login Page</h1>
+	<img src="trackorieLogo.png" width="100" height="100" >
+	<h1>Trackorie</h1>
 	<div class="borderOne">
 		<form action="LoginServlet" >
 			
-					
 			<input type="text" placeholder="Username" name="un"/><br><br>		
-			
 			<input type="password" placeholder="Password" name="pw"/><br>
 			<br>
 			

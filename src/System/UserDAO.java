@@ -159,8 +159,6 @@ public class UserDAO {
 		// get userid of current user
 		int userID = getUserID(bean);
 
-		System.out.println("THE USER ID RETRIEVED IS: " + userID);
-
 		// insert statement
 		String createQuery = "INSERT INTO Progression (userID, weight, age, height, goal, activityLevel, date, gender)"
 				+ " values('" + userID + "','" + startingWeight + "','" + age + "','" + height + "','" + goal + "','"
@@ -194,7 +192,6 @@ public class UserDAO {
 
 		}
 
-		System.out.println(bean.getBMR());
 		// activity levels
 
 		if (bean.getActivityLevel().equals("light")) {
@@ -305,8 +302,6 @@ public class UserDAO {
 
 		// get userid of current user
 		int userID = getUserID(bean);
-
-		System.out.println("THE USER ID RETRIEVED IS: " + userID);
 
 		// insert statement
 		currentCon = ConnectionManager.getConnection();
@@ -461,6 +456,20 @@ public class UserDAO {
 		return calorieGoals;
 	}
 
+	public static ResultSet getFoodLogCount(int userID) throws SQLException {
+		String searchQuery = "SELECT fooditems.itemname, count(eatlog.fooditemid) as amount\r\n" + 
+				"FROM eatlog, fooditems\r\n" + 
+				"WHERE userid = '"+userID+"' AND\r\n" + 
+				"eatlog.fooditemid = fooditems.fooditemid\r\n" + 
+				"GROUP BY fooditems.itemname\r\n" + 
+				"ORDER BY amount DESC";
+		currentCon = ConnectionManager.getConnection();
+		stmt = currentCon.createStatement();
+		rs = stmt.executeQuery(searchQuery);
+		return rs;
+		
+		
+	}
 	
 	// input userID
 	//return top 2 food types user eats based on past 20 logs
@@ -472,7 +481,8 @@ public class UserDAO {
 		int carbohydrateCount = 0;
 		int proteinCount = 0;
 		int milkDairyCount = 0; // milk 
-		int fruitVegCount = 0; // fruit and vegetables
+		int fruitCount = 0;
+		int vegCount = 0; 
 		int fatSugarCount = 0;
 		int otherCount = 0;
 
@@ -489,11 +499,14 @@ public class UserDAO {
 				proteinCount++;
 			} else if (rs.getString("type").equals("Milk and Dairy")) {
 				milkDairyCount++;
-			} else if (rs.getString("type").contains("Fruit")|| (rs.getString("type").contains("Vegetable"))) {
-				fruitVegCount++;
+			} else if (rs.getString("type").equals("Fruit") ) {
+				fruitCount++;
 			} else if (rs.getString("type").equals("Fats and Sugar")) {
 				fatSugarCount++;
-			} else { 
+			} else if(rs.getString("type").equals("Vegetable")){
+				vegCount++;
+			}
+			else { 
 				otherCount++;
 			}
 		}
@@ -501,7 +514,8 @@ public class UserDAO {
 			sortCount.put("Carbohydrate", carbohydrateCount);
 			sortCount.put("Protein", proteinCount);
 			sortCount.put("Milk and Dairy", milkDairyCount);
-			sortCount.put("Fruit and Vegetable", fruitVegCount);
+			sortCount.put("Fruit", fruitCount);
+			sortCount.put("Vegetable", vegCount);
 			sortCount.put("Fats and Sugars", fatSugarCount);
 			sortCount.put("Other", otherCount);
 
@@ -536,10 +550,16 @@ public class UserDAO {
 		
 	
 	
-	//method to get recipe ids, given food item id
-	//helper method for recommendations
+	/***
+	 * This method retrieves recipes where the recipe ingredients include 
+	 * the food type passed in the method
+	 * 
+	 * @param food item type
+	 * @return result set of recipe ids
+	 * @throws SQLException
+	 */
 	public static ResultSet getRecipeIDsFromFoodItemType(String type) throws SQLException {
-		String searchQuery = "SELECT r.recipeid\r\n" + 
+		String searchQuery = "SELECT DISTINCT r.recipeid\r\n" + 
 				"FROM recipe as r, recipeitems as ri, fooditems as fi\r\n" + 
 				"WHERE r.recipeid = ri.recipeid\r\n" + 
 				"AND ri.fooditemid = fi.fooditemid\r\n" + 
@@ -552,6 +572,7 @@ public class UserDAO {
 	}
 	
 	//get total calories of a recipe dish 
+	
 	
 	public static int caloriesGivenRecipeID(int recipeID) throws SQLException {
 		int totalCalories = 0;
@@ -569,18 +590,15 @@ public class UserDAO {
 			totalCalories = rs.getInt("Calories");
 		}
 		return totalCalories;
-		
 	}
 
 	public static ArrayList<RecipeBean> getRecommendations (UserBean bean) throws SQLException{
 		ArrayList<RecipeBean> recommendations = new ArrayList<>();
-
-		int typeOneCount = 0; // only want 3 recipes in array thus when this count hits 3 stop
-		int typeTwoCount = 0;
 		int userID = getUserID(bean); //used to get calories
 		int remainingCalories = calculateBMR(bean) - getConsumedCalories(userID); // remaining calories
 		String typeOne = getLogPattern(userID)[0]; // get first food item type
 		String typeTwo = getLogPattern(userID)[1]; // get second food item type
+
 		ResultSet typeOneResults = getRecipeIDsFromFoodItemType(typeOne); //holds a list of recipeids
 		ResultSet typeTwoResults = getRecipeIDsFromFoodItemType(typeTwo);
 		
@@ -590,22 +608,20 @@ public class UserDAO {
 		while(typeOneResults.next()) {
 			int recipeID = typeOneResults.getInt("recipeid");
 			if(caloriesGivenRecipeID(recipeID)<= remainingCalories) {
-				
 				RecipeBean recipe = getRecipeBean(recipeID);
 				recipe.setRecipeCalories(caloriesGivenRecipeID(recipeID));
 				recommendations.add(recipe);
-				typeOneCount ++;
+				
 			}	
 		}
 		
 		while(typeTwoResults.next()) {
 			int recipeID = typeTwoResults.getInt("recipeid");
 			if(caloriesGivenRecipeID(recipeID)<= remainingCalories) {
-				
 				RecipeBean recipe = getRecipeBean(recipeID);
 				recipe.setRecipeCalories(caloriesGivenRecipeID(recipeID));
 				recommendations.add(recipe);
-				typeTwoCount ++;
+				
 			}	
 		}	
 		return recommendations;

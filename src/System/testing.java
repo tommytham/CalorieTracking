@@ -91,17 +91,17 @@ public class testing {
 		
 		
 		
-		ArrayList<RecipeBean> hoo = recs;
-		//System.out.println(hoo.size());
-		ResultSet allIntakes = UserDAO.getAllCalorieIntakes(1);
-		while(allIntakes.next()) {
-			
-			System.out.println(allIntakes.getString(("date")) + " Calorie consumed: " + allIntakes.getString("totalcalories"));
-
+		String typeTwo = "Protein";
+		ResultSet typeTwoResults = UserDAO.getRecipeIDsFromFoodItemType(typeTwo);
+		while(typeTwoResults.next()) {
+			System.out.println(typeTwoResults.getInt(1));
+		}
 			
 		}
-		
+
+	
+	
 		
 	}
 	
-}
+

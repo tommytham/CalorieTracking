@@ -5,8 +5,7 @@
     import="java.util.*"
     import="com.google.gson.Gson"
     import="System.UserBean"%>
-    
-    
+    <link href="styleSheet.css" rel="stylesheet" type="text/css">
         <%
     UserBean currentUser = (UserBean) (session.getAttribute("currentSessionUser"));
 	currentUser = UserDAO.getUserBean(currentUser);
@@ -35,7 +34,7 @@ for (Map.Entry<String, Integer> entry : calorieGoals.entrySet()) {
 
 
 String dataPoints = gsonObj.toJson(list);
-String dataPoints2 =gsonObj.toJson(list2);
+//String dataPoints2 =gsonObj.toJson(list2);
 %>
 
 <!DOCTYPE html>
@@ -45,10 +44,21 @@ String dataPoints2 =gsonObj.toJson(list2);
 <title>Calorie Report</title>
 </head>
 <body>
-<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<input type="button" value="Go Back" onclick="openPage('dashboard.jsp')" />
+<br><br><br><br>
+<div id="chartContainer" style="height: 370px; width: 100%;"></div><br><br>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
 </html>
+
+<script type="text/javascript">
+		function openPage(pageURL) {
+
+			window.location.href = pageURL;
+
+		}
+
+</script>
 
 <script type="text/javascript">
 window.onload = function() { 
@@ -56,7 +66,7 @@ window.onload = function() {
 var chart = new CanvasJS.Chart("chartContainer", {
 	theme: "light2",
 	title: {
-		text: "Your weight progress"
+		text: "Your Calorie Intake"
 	},
 	axisX: {
 		title: "Date"
@@ -68,14 +78,41 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		type: "line",
 		yValueFormatString: "###kcal",
 		dataPoints : <%out.print(dataPoints);%>
-	},
-	{
-		type: "line",
-		yValueFormatString: "###kcal",
-		dataPoints : <%out.print(dataPoints2);%>
 	}]
 });
 chart.render();
  
 }
 </script>
+
+<div class="table" >
+<table style="width:80%" align="center">
+
+<tr> <th>Item Name</th> <th>Quantity Consumed</th> </tr>
+
+
+<% 
+ResultSet progressions2 = UserDAO.getFoodLogCount(userID); 
+while(progressions2.next())
+        {
+            %>
+                <tr>
+
+                	 <td>
+                     <%=progressions2.getString("itemname")%>
+                     </td>
+                     
+                     <td>
+                	 <%=Integer.toString(progressions2.getInt("amount")) %>
+                	 </td>
+                	        
+                     
+                </tr>
+            <% 
+        }
+    %>
+
+
+
+</table>
+</div>

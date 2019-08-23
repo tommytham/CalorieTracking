@@ -21,6 +21,7 @@
 				percentage = 100;}
 				
 				ArrayList<RecipeBean> recommendations = UserDAO.getRecommendations(currentUser);
+			
 				%>
 				
             
@@ -30,6 +31,7 @@
 
 </head>
 <body>
+	<img src="trackorieLogo.png" width="100" height="100" >
 <form action="LogoutServlet">
 <button class="logout"> Log Out</button>
 </form>
@@ -38,28 +40,30 @@
 <!-- User profile information -->
 <div>
 <div class="profile" style="float:left">
-Height: <%= currentUser.getHeight() %> cm <br>
-Weight: <%= currentUser.getCurrentWeight() %> kg <br>
-Gender: <%= currentUser.getGender() %><br>
-Age: <%= currentUser.getAge() %> <br>
-Activity levels : <%= currentUser.getActivityLevel() %> <br>
-Goal: <%= currentUser.getGoal() %> weight <%= recommendations.size()%>
+Height: <%= currentUser.getHeight() %> cm <br><br>
+Weight: <%= currentUser.getCurrentWeight() %> kg <br><br>
+Gender: <%= currentUser.getGender() %><br><br>
+Age: <%= currentUser.getAge() %> <br><br>
+Activity levels: <%= currentUser.getActivityLevel() %> <br><br>
+Goal: <%= currentUser.getGoal() %> weight 
 
 
-<br>
+<br><br>
 
 <button id="UpdatePersonalInfo" onclick="openPage('updateProfile.jsp')"> Update information</button>
 <button onclick="openPage('progressReport.jsp')"> Progress Report</button>
 </div> 
+<br><br>
 
 
 <!-- Calorie bar and information -->
-<div class ="calories" style="display:inline-block">
-<div class="meter">
-  <span style="width: <%=percentage%>%"></span>
+<div class ="calories" style="display:inline-block"><br>
+<div class="meter meterText">
+  <span style="width: <%=percentage%>%"><%=Math.round(percentage) %>%</span>
 </div> <br>
-
-Your calorie budget today is : <%= currentUser.getBMR() %> <br>
+<br><br>
+<button onclick="openPage('calorieReport.jsp')" style="float: right;"> Calorie report</button>
+Your calorie budget today is : <%= currentUser.getBMR() %> <br><br>
 Calories remaining for today:  <%= currentUser.getBMR()-UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)) %> <br><br>
 </div>
 </div>
@@ -77,30 +81,37 @@ Foods eaten today: <br><br>
 <!-- recommendations -->
 
 <%if(recommendations.size() != 0){ %>
-<div style="float:right">Don't know what to eat with remaining calories? <br>
+<div style="float:right">Don't know what to eat with your remaining calories? <br>
 
 <!-- Recommend 1 -->
 <div class="w3-container">
-  <button onclick="document.getElementById('firstRecommend').style.display='block'" class="w3-button w3-black"><%=recommendations.get(0).getRecipeName()%></button>
+  <button onclick="document.getElementById('firstRecommend').style.display='block'" class="w3-button "><%=recommendations.get(0).getRecipeName()%></button>
 
   <div id="firstRecommend" class="w3-modal">
     <div class="w3-modal-content">
       <div class="w3-container">
         <span onclick="document.getElementById('firstRecommend').style.display='none'" class="w3-button w3-display-topright">&times;</span>
         <p><%= recommendations.get(0).getRecipeName() %></p>
-        <p><%= recommendations.get(0).getRecipeDescription() %></p>
+        <br><%= recommendations.get(0).getRecipeDescription() %><br><br>
+        Ingredients: 
+        
         <%ResultSet fooditems = UserDAO.getRecipeFoodItems(UserDAO.getRecipeID(recommendations.get(0).getRecipeName()));
         while(fooditems.next()){
         %>
-        <p><%=fooditems.getString("itemname") %></p>
+        <%=fooditems.getString("itemname") %>,
 		<%} %>
-        <p><%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(0).getRecipeName()))%></p>
+		<br><br>
+        Calories: <%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(0).getRecipeName()))%>
       </div>
     </div>
   </div>
 </div> <br>
+<%} %>
+
 
 <!-- Recommend 2 -->
+
+<%if(recommendations.size() >= 2){ %>
 <div class="w3-container">
   <button onclick="document.getElementById('secondRecommend').style.display='block'" class="w3-button w3-black"><%=recommendations.get(1).getRecipeName()%></button>
 
@@ -108,19 +119,24 @@ Foods eaten today: <br><br>
     <div class="w3-modal-content">
       <div class="w3-container">
         <span onclick="document.getElementById('secondRecommend').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-        <p><%= recommendations.get(1).getRecipeName() %></p>
-        <p><%= recommendations.get(1).getRecipeDescription() %></p>
-        <%ResultSet fooditems2 = UserDAO.getRecipeFoodItems(UserDAO.getRecipeID(recommendations.get(1).getRecipeName()));
+       	<p><%= recommendations.get(1).getRecipeName()%></p><br>
+        <%= recommendations.get(1).getRecipeDescription()%><br><br>
+        Ingredients: 
+        <% ResultSet fooditems2 = UserDAO.getRecipeFoodItems(UserDAO.getRecipeID(recommendations.get(1).getRecipeName()));
         while(fooditems2.next()){
         %>
-        <p><%=fooditems2.getString("itemname") %></p>
+        <%=fooditems2.getString("itemname")%>,
 		<%} %>
-        <p><%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(1).getRecipeName()))%></p>
+		<br><br>
+        Calories: <%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(1).getRecipeName()))%>
       </div>
     </div>
   </div>
 </div> <br>
 
+<%} %>
+
+<%if(recommendations.size() >= 3){ %>
 <!-- Recommend 3 -->
 <div class="w3-container">
   <button onclick="document.getElementById('thirdRecommend').style.display='block'" class="w3-button w3-black"><%=recommendations.get(2).getRecipeName()%></button>
@@ -129,14 +145,16 @@ Foods eaten today: <br><br>
     <div class="w3-modal-content">
       <div class="w3-container">
         <span onclick="document.getElementById('thirdRecommend').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-        <p><%= recommendations.get(2).getRecipeName() %></p>
-        <p><%= recommendations.get(2).getRecipeDescription() %></p>
+        <p><%= recommendations.get(2).getRecipeName() %></p><br>
+        <%= recommendations.get(2).getRecipeDescription() %><br><br>
+        Ingredients:
         <%ResultSet fooditems3 = UserDAO.getRecipeFoodItems(UserDAO.getRecipeID(recommendations.get(2).getRecipeName()));
         while(fooditems3.next()){
         %>
-        <p><%=fooditems3.getString("itemname") %></p>
+        <%=fooditems3.getString("itemname") %>,
 		<%} %>
-        <p><%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(2).getRecipeName()))%></p>
+		<br><br>
+        Calories <%= UserDAO.caloriesGivenRecipeID(UserDAO.getRecipeID(recommendations.get(2).getRecipeName()))%></p>
       </div>
     </div>
   </div>
@@ -184,7 +202,7 @@ Total calories: <%=UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)) %
 
 <button onclick="openPage('logFood.jsp')"> Log Food</button>
 <button onclick="openPage('removeLog.jsp')"> Remove Log</button>
-<button onclick="openPage('calorieReport.jsp')"> Calorie report</button>
+
 
 
 <script>
@@ -197,19 +215,14 @@ window.onhashchange=function(){
 	}
 </script> 
 
-		<script type="text/javascript">
+<script type="text/javascript">
 		function openPage(pageURL) {
 
 			window.location.href = pageURL;
 
 		}
 
-	</script>
-
-
-
-  
-<!-- script for navigation bar https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_sidenav -->
+</script>
 
 
 

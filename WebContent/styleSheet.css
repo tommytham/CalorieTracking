@@ -38,7 +38,7 @@ div.profile{
   border: 1px solid #ccc;
     box-sizing: content-box;  
   width: 300px;
-  height: 100px;
+  height: 180px;
   padding: 15px;  
 
 }
@@ -51,7 +51,7 @@ div.calories{
   border: 1px solid #ccc;
     box-sizing: content-box;  
   width: 800px;
-  height: 100px;
+  height: 140px;
   padding: 15px;  
 }
 
@@ -179,6 +179,14 @@ th{
   box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
 }
 
+.meterText{
+	padding: 10px;
+	text-align:center;
+	font-size: 15px;
+	color: white;
+	
+}
+
 .meter>span {
   display: block;
   height: 100%;
@@ -203,7 +211,8 @@ th{
 
 <!-- modal -->
 .w3-container:after,.w3-container:before{content:"";display:table;clear:both}
-.w3-container,.w3-panel{padding:0.01em 16px}.w3-panel{margin-top:16px;margin-bottom:16px}
+.w3-container,.w3-panel{padding:0.01em 16px}
+.w3-panel{margin-top:16px;margin-bottom:16px}
 .w3-modal{z-index:3;display:none;padding-top:100px;position:fixed;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgb(0,0,0);background-color:rgba(0,0,0,0.4)}
 .w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:600px}
 .w3-display-topright{position:absolute;right:0;top:0}
@@ -213,4 +222,6 @@ th{
    position:fixed;
    right:10px;
    top:5px;
+   border-style: solid;
+   border-color: SeaGreen;
 }

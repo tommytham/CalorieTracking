@@ -17,6 +17,8 @@
 <input type="button" value="Go Back" onclick="openPage('dashboard.jsp')" />
 <br>
 
+
+<h1>Want to remove an item you logged today?</h1>
 <div class="table">
 
 
@@ -38,8 +40,6 @@ while(rs.next())
         			<input type="checkbox" name="loggedItem" value="<%=rs.getInt("logid")%>"/><%=rs.getString("itemname")%>
                   
                      </td>
-                     
-                     
                      <td>
                      <%=Integer.toString(rs.getInt("calories"))%>
                 	</td>
