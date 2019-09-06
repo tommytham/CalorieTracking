@@ -24,8 +24,8 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, java.io.IOException {
 
 		try {
-			
-			//get input from form
+
+			// get input from form
 			UserBean user = new UserBean();
 			user.setUserName(request.getParameter("un"));
 			user.setPassword(request.getParameter("pw"));
@@ -35,35 +35,34 @@ public class LoginServlet extends HttpServlet {
 			if (user.isValid()) {
 
 				HttpSession session = request.getSession(true);
-				session.setAttribute("currentSessionUser", user);
-				
-				if(UserDAO.checkSetup(user) == false) {
-				response.sendRedirect("startConfig.jsp"); // logged-in page
-				
-				//if current weight is null (implies not entered personal info
-				//then direct to start config
-			}
-				else {
-					user = UserDAO.getUserBean(user);
+				session.setAttribute("currentSessionUser", user); //se
+
+				if (UserDAO.checkSetup(user) == false) {
+					response.sendRedirect("startConfig.jsp"); // direct to setup profile
+
+					// if current weight is null -> implies not entered personal info
+					// then direct to start config
+				} else {
+					user = UserDAO.getUserBean(user); //gets the details of the user and assigns to the userbean
 					session.setAttribute("currentSessionUser", user);
-					response.sendRedirect("dashboard.jsp");
+					response.sendRedirect("dashboard.jsp"); //direct to dash board
 				}
-				}
+			}
 
 			else
 				request.setAttribute("errorMessage", "User details do not match. Please try again.");
-				request.getRequestDispatcher("/LoginPage.jsp").forward(request, response);
-				
+			request.getRequestDispatcher("/LoginPage.jsp").forward(request, response);
+
 		}
 
 		catch (Throwable theException) {
 			System.out.println(theException);
 		}
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, java.io.IOException {
-		
-}
+
+	}
 }

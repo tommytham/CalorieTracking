@@ -20,7 +20,7 @@ public class StartConfigServlet extends HttpServlet {
 			throws ServletException, java.io.IOException {
 		HttpSession session = request.getSession(true); //gets current session
 		UserBean currentUser = (UserBean) (session.getAttribute("currentSessionUser")); //gets bean from previous session (login page) and assigns to new bean
-		if(request.getParameter("activity").length()>0 && request.getParameter("height").length()>0 && request.getParameter("age").length()>0) {
+		if(request.getParameter("weight").length()>0 && request.getParameter("height").length()>0 && request.getParameter("age").length()>0) {
 			currentUser.setActivityLevel(request.getParameter("activity"));
 			currentUser.setCurrentWeight(Float.parseFloat(request.getParameter("weight")));
 			currentUser.setGender(request.getParameter("gender"));
@@ -29,7 +29,7 @@ public class StartConfigServlet extends HttpServlet {
 			currentUser.setAge(Integer.parseInt(request.getParameter("age")));
 			
 			//validate with weight, age and height
-			if(currentUser.getCurrentWeight()>0 && currentUser.getHeight()>0 && currentUser.getAge()>0) {
+			if(currentUser.getCurrentWeight()>0 && currentUser.getHeight()>3 && currentUser.getAge()>0) {
 				try {
 					BMR = UserDAO.calculateBMR(currentUser);
 				} catch (SQLException e1) {
@@ -49,7 +49,7 @@ public class StartConfigServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 				
-				response.sendRedirect("preferences.jsp");
+				response.sendRedirect("dashboard.jsp");
 			}
 			
 			

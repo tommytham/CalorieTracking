@@ -72,11 +72,7 @@ Calories remaining for today:  <%= currentUser.getBMR()-UserDAO.getConsumedCalor
 <!-- foods eaten + recommendations -->
 <div class="borderOne">
 
-Foods eaten today: <br><br>
-<div class="table">
 
-<table width="500" align="center" >
-<tr> <th>Item Name</th> <th> Calories </th> </tr>
 
 <!-- recommendations -->
 
@@ -195,6 +191,10 @@ Foods eaten today: <br><br>
 
 
 <!-- table contents -->
+Foods eaten today: <br><br>
+<div class="table">
+<table width="500" align="center" >
+<tr> <th>Item Name</th> <th> Calories </th> </tr>
 <% 
 ResultSet rs = null;
 rs = UserDAO.getTodaysLogs(UserDAO.getUserID(currentUser));
@@ -215,12 +215,7 @@ while(rs.next())
         }
     %>
 
-
-
-</table>
-
-
-<br>
+</table><br>
 Total calories: <%=UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)) %>
 </div>
 </div>

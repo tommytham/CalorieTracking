@@ -72,7 +72,7 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		title: "Date"
 	},
 	axisY: {
-		title: "Calories"
+		title: "Calories Consumed"
 	},
 	data: [{
 		type: "line",

@@ -43,18 +43,10 @@ public class UserDAO {
 
 	public static UserBean login(UserBean bean) {
 
-		// preparing some objects for connection
-
 		String username = bean.getUsername();
 		String password = bean.getPassword();
 
 		String searchQuery = "select * from users where username='" + username + "' AND password='" + password + "'";
-
-		// "System.out.println" prints in the console; Normally used to trace the
-		// process
-		System.out.println("Your user name is " + username);
-		System.out.println("Your password is " + password);
-		System.out.println("Query: " + searchQuery);
 
 		try {
 			// connect to DB
@@ -400,10 +392,15 @@ public class UserDAO {
 		return rs;
 	}
 
-	// Use this method to get the number of calories consumed so far of 'today'
+	/***
+	 * Method to get the number of calories consumed so far of 'today'
+	 * @param userID
+	 * @return total calories consumed
+	 * @throws SQLException
+	 */
 	public static int getConsumedCalories(int userID) throws SQLException {
 		int caloriesConsumed = 0;
-		rs = getTodaysLogs(userID);
+		rs = getTodaysLogs(userID); // get result set of food items logged
 		while (rs.next()) {
 			caloriesConsumed += rs.getInt("calories");
 
@@ -472,18 +469,21 @@ public class UserDAO {
 		
 	}
 	
-	// input userID
-	//return top 2 food types user eats based on past 20 logs
-	//helper method for recommendation
+	/***
+	 * Helper method for recommendation 
+	 * @param userID
+	 * @return return top 2 food types user eats based on past 20 logs
+	 * @throws SQLException
+	 */
 	public static String[] getLogPattern(int userID) throws SQLException {
 
 		String[] keyValues = new String[2];
 		HashMap<String, Integer> sortCount = new HashMap();
 		int carbohydrateCount = 0;
 		int proteinCount = 0;
-		int milkDairyCount = 0; // milk 
+		int milkDairyCount = 0; // milk
 		int fruitCount = 0;
-		int vegCount = 0; 
+		int vegCount = 0;
 		int fatSugarCount = 0;
 		int otherCount = 0;
 
@@ -500,54 +500,52 @@ public class UserDAO {
 				proteinCount++;
 			} else if (rs.getString("type").equals("Milk and Dairy")) {
 				milkDairyCount++;
-			} else if (rs.getString("type").equals("Fruit") ) {
+			} else if (rs.getString("type").equals("Fruit")) {
 				fruitCount++;
 			} else if (rs.getString("type").equals("Fats and Sugar")) {
 				fatSugarCount++;
-			} else if(rs.getString("type").equals("Vegetable")){
+			} else if (rs.getString("type").equals("Vegetable")) {
 				vegCount++;
-			}
-			else { 
+			} else {
 				otherCount++;
 			}
 		}
-			
-			sortCount.put("Carbohydrate", carbohydrateCount);
-			sortCount.put("Protein", proteinCount);
-			sortCount.put("Milk and Dairy", milkDairyCount);
-			sortCount.put("Fruit", fruitCount);
-			sortCount.put("Vegetable", vegCount);
-			sortCount.put("Fats and Sugars", fatSugarCount);
-			sortCount.put("Other", otherCount);
 
-			//get the two top food item type which has been logged the most by user
-			
-			int maxValue = (Collections.max(sortCount.values()));
-			
-			sortCount.forEach((k, v) -> {
-				if (v.equals(maxValue)) {
-					keyValues[0] = k;
+		sortCount.put("Carbohydrate", carbohydrateCount);
+		sortCount.put("Protein", proteinCount);
+		sortCount.put("Milk and Dairy", milkDairyCount);
+		sortCount.put("Fruit", fruitCount);
+		sortCount.put("Vegetable", vegCount);
+		sortCount.put("Fats and Sugars", fatSugarCount);
+		sortCount.put("Other", otherCount);
 
-				}
+		// get the two top food item type which has been logged the most by user
 
-			});
+		int maxValue = (Collections.max(sortCount.values()));
 
-			sortCount.remove(keyValues[0]);
-			int maxValue2 = (Collections.max(sortCount.values())); // get new max value
-			sortCount.forEach((k, v) -> {
-				if (v.equals(maxValue2)) {
-					//System.out.println(k);
-					keyValues[1] = k;
+		sortCount.forEach((k, v) -> {
+			if (v.equals(maxValue)) {
+				keyValues[0] = k;
 
-				}
+			}
 
-				// algorithm flawed if multiple variables have same max value
+		});
 
-			});
-			return keyValues;
-		}
-		// sort out the counts and find what has the highest count
-		// with the highest count, get the meat type and calories remaining
+		sortCount.remove(keyValues[0]);
+		int maxValue2 = (Collections.max(sortCount.values())); // get new max value
+		sortCount.forEach((k, v) -> {
+			if (v.equals(maxValue2)) {
+				// System.out.println(k);
+				keyValues[1] = k;
+
+			}
+
+			// algorithm flawed if multiple variables have same max value
+
+		});
+		return keyValues;
+	}
+
 		
 	
 	
@@ -593,42 +591,42 @@ public class UserDAO {
 		return totalCalories;
 	}
 
-	public static ArrayList<RecipeBean> getRecommendations (UserBean bean) throws SQLException{
+	public static ArrayList<RecipeBean> getRecommendations(UserBean bean) throws SQLException {
 		ArrayList<RecipeBean> recommendations = new ArrayList<>();
-		int userID = getUserID(bean); //used to get calories
+		int userID = getUserID(bean); // used to get calories
 		int remainingCalories = calculateBMR(bean) - getConsumedCalories(userID); // remaining calories
 		String typeOne = getLogPattern(userID)[0]; // get first food item type
 		String typeTwo = getLogPattern(userID)[1]; // get second food item type
 
-		ResultSet typeOneResults = getRecipeIDsFromFoodItemType(typeOne); //holds a list of recipeids
+		ResultSet typeOneResults = getRecipeIDsFromFoodItemType(typeOne); // holds a list of recipeids
 		ResultSet typeTwoResults = getRecipeIDsFromFoodItemType(typeTwo);
-		
-		//need to filter out results 
-		//so get list of recipes that have calories under remaining
-		
-		while(typeOneResults.next()) {
-			int recipeID = typeOneResults.getInt("recipeid");
-			if(caloriesGivenRecipeID(recipeID)<= remainingCalories) {
-				RecipeBean recipe = getRecipeBean(recipeID);
-				recipe.setRecipeCalories(caloriesGivenRecipeID(recipeID));
-				recommendations.add(recipe);
-				
-			}	
-		}
-		
-		while(typeTwoResults.next()) {
-			int recipeID = typeTwoResults.getInt("recipeid");
-			if(caloriesGivenRecipeID(recipeID)<= remainingCalories) {
-				RecipeBean recipe = getRecipeBean(recipeID);
-				recipe.setRecipeCalories(caloriesGivenRecipeID(recipeID));
-				recommendations.add(recipe);
-				
-			}	
-		}	
-		Comparator<RecipeBean> compareByCalorie = (RecipeBean r1, RecipeBean r2) ->
-        r1.getRecipeCalories().compareTo( r2.getRecipeCalories() );
 
-        Collections.sort(recommendations, Collections.reverseOrder(compareByCalorie));
+		// need to filter out results
+		// so get list of recipes that have calories under remaining
+
+		while (typeOneResults.next()) {
+			int recipeID = typeOneResults.getInt("recipeid");
+			if (caloriesGivenRecipeID(recipeID) <= remainingCalories) {
+				RecipeBean recipe = getRecipeBean(recipeID);
+				recipe.setRecipeCalories(caloriesGivenRecipeID(recipeID));
+				recommendations.add(recipe);
+
+			}
+		}
+
+		while (typeTwoResults.next()) {
+			int recipeID = typeTwoResults.getInt("recipeid");
+			if (caloriesGivenRecipeID(recipeID) <= remainingCalories) {
+				RecipeBean recipe = getRecipeBean(recipeID);
+				recipe.setRecipeCalories(caloriesGivenRecipeID(recipeID));
+				recommendations.add(recipe);
+
+			}
+		}
+		Comparator<RecipeBean> compareByCalorie = (RecipeBean r1, RecipeBean r2) -> r1.getRecipeCalories()
+				.compareTo(r2.getRecipeCalories());
+
+		Collections.sort(recommendations, Collections.reverseOrder(compareByCalorie));
 		return recommendations;
 	}
 	

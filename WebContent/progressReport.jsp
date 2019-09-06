@@ -9,20 +9,25 @@
     UserBean currentUser = (UserBean) (session.getAttribute("currentSessionUser"));
 	currentUser = UserDAO.getUserBean(currentUser);
 	int userID = UserDAO.getUserID(currentUser);
-	ResultSet progressions = UserDAO.getProgress(userID); 
-Gson gsonObj = new Gson();
-Map<Object,Object> map = null;
-List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
+	ResultSet progressions = UserDAO.getProgress(userID); //get all progression logs
+	
+	Gson gsonObj = new Gson();
+	Map<Object,Object> map = null;
+	List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
 
-while(progressions.next()){
-map = new HashMap<Object,Object>(); map.put("label", progressions.getString("date")); map.put("y", progressions.getInt("weight")); list.add(map);
-}
-String dataPoints = gsonObj.toJson(list);
+	while(progressions.next()){
+		map = new HashMap<Object,Object>(); 
+		map.put("label", progressions.getString("date")); 
+		map.put("y", progressions.getInt("weight")); 
+		list.add(map);
+	}
+	
+	String dataPoints = gsonObj.toJson(list);
 %>
 
 <link href="styleSheet.css" rel="stylesheet" type="text/css">
 <!DOCTYPE html>
-<!-- Code altered from https://developers.google.com/chart/interactive/docs/gallery/linechart -->
+<!-- Code altered from https://canvasjs.com/jsp-charts/line-chart/ -->
 <html>
 
  <head>

@@ -47,16 +47,11 @@ while(rs.next())
             <% 
         }
     %>
-
-
-
 </table>
-
 
 <br>
 Total calories: <%=UserDAO.getConsumedCalories(UserDAO.getUserID(currentUser)) %>
 </div>
-
 
 <input type="Submit"  name="logRecipe" value="Remove">
 </form>

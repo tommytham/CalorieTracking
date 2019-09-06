@@ -27,7 +27,7 @@ public class UpdateOtherServlet extends HttpServlet{
 		}
 		
 		
-	if(request.getParameter("activity").length()>0 && request.getParameter("height").length()>0 && request.getParameter("age").length()>0) {
+	if(request.getParameter("weight").length()>0 && request.getParameter("height").length()>0 && request.getParameter("age").length()>0) {
 		String activity = request.getParameter("activity");
 		float weight = Float.parseFloat(request.getParameter("weight"));
 		String goal = request.getParameter("goal");
