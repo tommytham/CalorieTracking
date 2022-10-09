@@ -6,4 +6,6 @@
 
 # About
 
-Web applications was an area that was not taught and so I wanted to explore it. I chose to create a web application with the purpose of allowing users to track their calories and be recommended dishes that would fit their preferences.
+Web applications was an area I wanted to explore it. 
+
+I chose to create a web application with the purpose of allowing users to track their calories and be recommended dishes that would fit their preferences.
